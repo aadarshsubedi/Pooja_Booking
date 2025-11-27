@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
+
 import Home from "./pages/home";
 import Poojas from "./pages/Poojas";
 import Pandits from "./pages/Pandits";
@@ -17,7 +18,12 @@ import Ramtripathi from "./pages/Ramtripathi";
 import Mohanjoshi from "./pages/Mohanjoshi";
 import Bholakoirala from "./pages/Bholakoirala";
 import Dineshacharya from "./pages/Dineshacharya";
-// make sure filename matches
+import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+
+import CallPage from "./pages/callpage";
+import MessageInterface from "./pages/messageinterface";
+import ScrollToTop from "./utils/scrolltotop";
 
 import "./App.css";
 
@@ -53,7 +59,9 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <Navbar />
+
       <main>
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
@@ -71,8 +79,20 @@ const App: React.FC = () => {
           <Route path="/mohanjoshi" element={<Mohanjoshi />} />
           <Route path="/bholakoirala" element={<Bholakoirala />} />
           <Route path="/dineshacharya" element={<Dineshacharya />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/signin" element={<Signin />} />
+
+          {/* Call Page */}
+          <Route path="/call" element={<CallPage />} />
+
+          {/* Message Interface */}
+          <Route
+            path="/message"
+            element={<MessageInterface onBack={() => window.history.back()} />}
+          />
         </Routes>
       </main>
+
       <Footer />
     </Router>
   );

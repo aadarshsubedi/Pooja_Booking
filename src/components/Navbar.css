@@ -65,7 +65,7 @@
 .signup:hover {
   background-color: #FBB44C;
   color: #BA0000;
-  transform: scale(1.1);
+  transform: scale(1.0);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
 }
 
@@ -81,7 +81,7 @@
 .signin:hover {
   background-color: #BA0000;
   color: #FBB44C;
-  transform: scale(1.1);
+  transform: scale(1.0);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
 }
 

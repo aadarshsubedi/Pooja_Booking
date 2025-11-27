@@ -1,7 +1,6 @@
-// Poojas.tsx
 import React from "react";
 import "./Poojas.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Service = {
   id: number;
@@ -150,6 +149,21 @@ const services: Service[] = [
 ];
 
 const ServiceCard: React.FC<{ service: Service }> = ({ service }) => {
+  const navigate = useNavigate();
+
+  const handleBookNow = () => {
+    const isSignedUp = localStorage.getItem("isSignedUp") === "true";
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (isLoggedIn) {
+      navigate("/pandits"); // already signed up and logged in
+    } else if (isSignedUp) {
+      navigate("/signin"); // signed up but not logged in
+    } else {
+      navigate("/signup"); // not signed up
+    }
+  };
+
   return (
     <div className="service-card">
       <span className="service-category">{service.category}</span>
@@ -170,10 +184,9 @@ const ServiceCard: React.FC<{ service: Service }> = ({ service }) => {
       </div>
 
       <div className="service-footer">
-        {/* 👇 Book Now navigates to pandits.tsx */}
-        <Link to="/pandits">
-          <button className="service-button">Book Now</button>
-        </Link>
+        <button className="service-button" onClick={handleBookNow}>
+          Book Now
+        </button>
       </div>
     </div>
   );

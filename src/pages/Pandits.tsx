@@ -1,7 +1,6 @@
 import React from "react";
 import "./Pandits.css";
-import { Link } from "react-router-dom"; // ✅ Keep this at the top
-
+import { useNavigate } from "react-router-dom";
 
 type Pandit = {
   id: number;
@@ -13,12 +12,45 @@ type Pandit = {
   image: string;
 };
 
-
 const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
+  const navigate = useNavigate();
+
+  const handleBookNow = () => {
+    const isSignedUp = localStorage.getItem("isSignedUp") === "true";
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (isLoggedIn) {
+      const panditPath = `/${pandit.name.toLowerCase().replace(/\s+/g, "")}`;
+      navigate(panditPath);
+    } else if (isSignedUp) {
+      navigate("/signin");
+    } else {
+      navigate("/signup");
+    }
+  };
+
+  const handleCall = () => {
+    const isSignedUp = localStorage.getItem("isSignedUp") === "true";
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
+    if (!isSignedUp) {
+      navigate("/signup");
+      return;
+    }
+
+    if (!isLoggedIn) {
+      navigate("/signin");
+      return;
+    }
+
+    // If user is logged in, navigate to CallPage and pass pandit data
+    navigate("/call", { state: { pandit } });
+  };
+
   return (
     <div className="pandit-card">
       <img src={pandit.image} alt={pandit.name} className="pandit-image" />
-      
+
       <div className="pandit-details">
         <h3 className="pandit-name">{pandit.name}</h3>
         <p className="pandit-experience">{pandit.experience}</p>
@@ -30,7 +62,6 @@ const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
           </span>
         </div>
 
-        {/* ✅ Specializations/pooja names */}
         <div className="pandit-specializations">
           {pandit.specializations.map((spec, index) => (
             <div key={index} className="specialty-box">
@@ -40,52 +71,19 @@ const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
           ))}
         </div>
 
-<div className="pandit-footer">
-  <button className="call-btn">📞 Call</button>
-
-  {pandit.name === "Pandit Ram Sharma" ? (
-    <Link to="/ramsharma">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) : pandit.name === "Pandit Suresh Mishra" ? (
-    <Link to="/sureshmishra">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) : pandit.name === "Pandit Ramesh Tiwari" ? (
-    <Link to="/rameshtiwari">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) : pandit.name === "Pandit Anil Sharma" ? (
-    <Link to="/anilsharma">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) : pandit.name === "Pandit Ram Tripathi" ? (
-    <Link to="/ramtripathi">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) :  pandit.name === "Pandit Mohan Joshi" ? (
-    <Link to="/mohanjoshi">
-      <button className="book-btn">Book Now</button>
-    </Link>
-  ) :pandit.name === "Pandit Bhola Koirala" ? (
-    <Link to="/bholakoirala">
-      <button className="book-btn">Book Now</button>
-    </Link>
-    ) : pandit.name === "Pandit Dinesh Acharya" ? (
-    <Link to="/dineshacharya">
-      <button className="book-btn">Book Now</button>
-    </Link>
-    ) :(
-    <button className="book-btn">Book Now</button>
-  )}
-</div>
-
+        <div className="pandit-footer">
+          <button className="call-btn" onClick={handleCall}>
+            📞 Call
+          </button>
+          <button className="book-btn" onClick={handleBookNow}>
+            Book Now
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
-// ✅ Pandits page component
 const Pandits: React.FC = () => {
   const pandits: Pandit[] = [
     {
@@ -115,8 +113,8 @@ const Pandits: React.FC = () => {
       specializations: ["Navagraha Pooja", "Marriage", "Annaprashan"],
       image: "/images/pandit3.png",
     },
-        {
-      id: 3,
+    {
+      id: 4,
       name: "Pandit Anil Sharma",
       experience: "10+ years experience",
       rating: 4.9,
@@ -124,8 +122,8 @@ const Pandits: React.FC = () => {
       specializations: ["Navagraha Pooja", "Marriage", "Annaprashan"],
       image: "/images/pandit4.png",
     },
-        {
-      id: 3,
+    {
+      id: 5,
       name: "Pandit Ram Tripathi",
       experience: "15+ years experience",
       rating: 4.9,
@@ -133,8 +131,8 @@ const Pandits: React.FC = () => {
       specializations: ["Navagraha Pooja", "Marriage", "Annaprashan"],
       image: "/images/pandit5.png",
     },
-        {
-      id: 3,
+    {
+      id: 6,
       name: "Pandit Mohan Joshi",
       experience: "15+ years experience",
       rating: 4.9,
@@ -142,8 +140,8 @@ const Pandits: React.FC = () => {
       specializations: ["Navagraha Pooja", "Marriage", "Annaprashan"],
       image: "/images/pandit3.png",
     },
-            {
-      id: 3,
+    {
+      id: 7,
       name: "Pandit Bhola Koirala",
       experience: "10+ years experience",
       rating: 4.9,
@@ -151,8 +149,8 @@ const Pandits: React.FC = () => {
       specializations: ["Navagraha Pooja", "Marriage", "Annaprashan"],
       image: "/images/pandit3.png",
     },
-            {
-      id: 3,
+    {
+      id: 8,
       name: "Pandit Dinesh Acharya",
       experience: "15+ years experience",
       rating: 4.9,
@@ -175,7 +173,6 @@ const Pandits: React.FC = () => {
         ))}
       </div>
 
-      {/* ✅ New Section (as in screenshot) */}
       <div className="browse-pandits-section">
         <p className="browse-text">
           Looking for a specific type of ceremony or location?

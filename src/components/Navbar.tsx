@@ -2,27 +2,26 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
-    navigate("/home");       // Go to home page
-    window.location.reload(); // Refresh the page
+    navigate("/home");
+    window.location.reload();
   };
 
   return (
     <nav className="navbar">
-      {/* Logo */}
       <div className="logo">
         <img
           src="/images/logo.png"
           alt="Pooja Booking"
           style={{ cursor: "pointer" }}
-          onClick={handleLogoClick} // Click triggers home + refresh
+          onClick={handleLogoClick}
         />
       </div>
 
-      {/* Navigation Links */}
       <ul className="nav-links">
         <li>
           <Link to="/home">
@@ -50,10 +49,14 @@ const Navbar: React.FC = () => {
         </li>
       </ul>
 
-      {/* Buttons */}
+      {/* UPDATED BUTTONS */}
       <div className="nav-buttons">
-        <button className="signup">Sign Up</button>
-        <button className="signin">Sign In</button>
+        <button className="signup" onClick={() => navigate("/signup")}>
+          Sign Up
+        </button>
+        <button className="signin" onClick={() => navigate("/signin")}>
+          Sign In
+        </button>
       </div>
     </nav>
   );
