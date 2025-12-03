@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
@@ -60,7 +61,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <Navbar />
 
@@ -81,15 +82,12 @@ const App: React.FC = () => {
           <Route path="/bholakoirala" element={<Bholakoirala />} />
           <Route path="/dineshacharya" element={<Dineshacharya />} />
 
-          {/* Booking + Payment */}
           <Route path="/booking" element={<BookingForm />} />
           <Route path="/payment" element={<PaymentPage />} />
 
-          {/* Auth */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
 
-          {/* Call & Message */}
           <Route path="/call" element={<CallPage />} />
           <Route
             path="/message"
@@ -99,7 +97,7 @@ const App: React.FC = () => {
       </main>
 
       <Footer />
-    </Router>
+    </>
   );
 };
 

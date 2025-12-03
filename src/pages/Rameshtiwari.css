@@ -1,173 +1,145 @@
-/* === Profile Section Layout === */
-.profile-section {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  background: linear-gradient(to bottom, #fff9f5, #ffeede);
+/* MAIN PAGE WRAPPER */
+.pandit-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  box-sizing: border-box;
 }
 
-/* === Profile Card === */
+/* ====================== */
+/*      PROFILE CARD      */
+/* ====================== */
+
 .profile-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  background: linear-gradient(to bottom, #fff9f5, #ffeede);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 25px;
+  gap: 22px;
+  width: 100%;
+  background: #f7d6ab;
+  padding: 30px 35px;
+  border-radius: 18px;
+  box-sizing: border-box;
 }
 
 .profile-pic {
-  width: 100px;
-  height: 100px;
+  width: 95px;
+  height: 95px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f5b95a, #e87b28);
+  background: #ffe8ce;
 }
 
-.profile-info h2 {
-  margin: 0 0 8px 0;
-  font-size: 1.4rem;
-}
-
-.profile-info p {
-  margin: 0 0 10px 0;
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.select-btn {
-   background: linear-gradient(90deg, #ff8c42, #ff5e00);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s ease;
-}
-
-.select-btn:hover {
-  background: #e58935;
-}
-
-/* === About Section === */
-.about-section {
-  margin-bottom: 25px;
-}
-
-.about-section h3 {
-  margin-bottom: 6px;
-  color: #444;
-}
-
-.about-section p {
-  line-height: 1.5;
-  color: #555;
-}
-
-/* === Location Section === */
-.location-section {
-  margin-bottom: 25px;
-}
-
-.location-box {
+.profile-info {
   display: flex;
-  align-items: center;
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 8px 12px;
-  width: 100%;
-  max-width: 350px;
+  flex-direction: column;
+  max-width: 90%;
 }
 
-.location-icon {
-  color: #f39842;
-  margin-right: 8px;
+.profile-name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #000;
 }
 
-.location-input {
-  border: none;
-  outline: none;
-  flex: 1;
-  font-size: 0.95rem;
-  background: transparent;
+.profile-text {
+  margin-top: 10px;
+  font-size: 16px;
+  color: #333;
+  line-height: 1.5;
 }
 
-/* === Availability Section === */
-.availability-section h3 {
-  margin-bottom: 10px;
-  color: #444;
+/* ================= */
+/*       CARDS       */
+/* ================= */
+
+.card {
+  background: #fff;
+  padding: 18px 22px;
+  border-radius: 12px;
+  margin-top: 20px;
 }
+
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ==================== */
+/*      CALENDAR AREA   */
+/* ==================== */
 
 .calendar-container {
+  margin-top: 12px;
+}
+
+.selected-date {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #444;
+}
+
+/* ================= */
+/*      BUTTONS      */
+/* ================= */
+
+.buttons {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
-/* === Calendar Box === */
-.calendar {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  width: 260px;
+.btn {
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
 }
 
-.calendar-header {
-  text-align: center;
-  font-weight: 600;
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.back {
+  background: #f1f1f1;
   color: #333;
-  margin-bottom: 10px;
 }
 
-/* === Table === */
-.calendar table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-.calendar th {
-  font-size: 0.9rem;
-  color: #666;
-  padding: 5px 0;
-}
-
-.calendar td {
-  width: 35px;
-  height: 35px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: background 0.2s;
-}
-
-/* === Booking Colors === */
-.booked {
-  background: #f76c6c;
+.next {
+  background: #ff7b00;
   color: #fff;
 }
 
-.available {
-  background: #6bcf63;
-  color: #fff;
-}
+/* ==================== */
+/*     RESPONSIVE       */
+/* ==================== */
 
-.calendar td:hover {
-  opacity: 0.8;
-}
-
-/* === Responsive === */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .profile-card {
     flex-direction: column;
     text-align: center;
   }
 
-  .calendar-container {
-    justify-content: center;
+  .profile-info {
+    max-width: 100%;
+  }
+
+  .profile-pic {
+    width: 80px;
+    height: 80px;
   }
 }

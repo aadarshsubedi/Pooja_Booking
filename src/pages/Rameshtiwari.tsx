@@ -1,4 +1,4 @@
-// Rameshtiwari.tsx
+// src/pages/Rameshtiwari.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Rameshtiwari.css";
@@ -8,8 +8,7 @@ const Rameshtiwari: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // UNIQUE BOOKED DATES FOR RAMESH TIWARI
-  const bookedDates = {
+  const bookedDates: Record<string, boolean> = {
     "2025-02-09": true,
     "2025-02-18": true,
     "2025-02-26": true,
@@ -31,44 +30,63 @@ const Rameshtiwari: React.FC = () => {
     });
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
-    <div className="profile-section">
-      {/* Profile Card */}
+    <div className="pandit-page">
+
+      {/* PROFILE CARD */}
       <div className="profile-card">
-        <div className="profile-pic" />
+        <div className="profile-pic"></div>
+
         <div className="profile-info">
-          <h2>Ramesh Tiwari</h2>
-          <p>
-            Experienced in Graha Shanti Puja, Rudri Puja, and Satyanarayan Pooja for Nepalese households | 20 years of experience.
+          <h3 className="profile-name">Anil Sharma</h3>
+          <p className="profile-text">
+            Experienced Vedic Pandit delivering sacred rituals with devotion and authenticity. |
+            10 years of experience.
           </p>
         </div>
       </div>
 
-      {/* About Section */}
-      <div className="about-section">
+      {/* ABOUT */}
+      <div className="card">
         <h3>About</h3>
         <p>
-          Pandit Ramesh Tiwari specializes in traditional Nepali rituals including Graha Shanti, Rudri Puja, and Satyanarayan Pooja. 
-          With two decades of experience, he brings accuracy, devotion, and trust to every ceremony.
+          Pandit Ramesh Tiwari specializes in traditional Nepali rituals such as
+          Graha Shanti, Rudri Puja, and Satyanarayan Pooja. With over two decades
+          of experience, he is known for performing ceremonies with devotion,
+          clarity, and adherence to authentic Vedic procedures.
         </p>
       </div>
 
-      {/* Availability Section */}
-      <div className="availability-section">
+      {/* AVAILABILITY */}
+      <div className="card">
         <h3>Availability</h3>
         <div className="calendar-container">
           <PanditCalendar
             panditName="Ramesh Tiwari"
-            bookedDates={bookedDates}       // 📌 UNIQUE BOOKED DATES
+            bookedDates={bookedDates}
             onDateSelect={(date) => setSelectedDate(date)}
           />
         </div>
+
+        {selectedDate && (
+          <p className="selected-date">
+            Selected date: <strong>{selectedDate}</strong>
+          </p>
+        )}
       </div>
 
-      {/* Buttons */}
-      <div className="form-buttons">
-        <button className="back">Back</button>
-        <button className="next" onClick={handleSelect}>Next</button>
+      {/* BUTTONS */}
+      <div className="buttons">
+        <button className="btn back" onClick={handleBack}>
+          Back
+        </button>
+        <button className="btn next" onClick={handleSelect}>
+          Next
+        </button>
       </div>
     </div>
   );

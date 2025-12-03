@@ -1,5 +1,4 @@
 // src/components/Pandits.tsx
-
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Pandits.css";
@@ -17,23 +16,35 @@ type Pandit = {
 
 const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
   const navigate = useNavigate();
-
-  // Read user from AuthContext
   const { user } = useContext(AuthContext);
   const isAuthenticated = !!user;
 
-  // BOOK NOW LOGIC
+  // Map Pandit names to their route paths
+  const panditRoutes: Record<string, string> = {
+    "Pandit Ram Sharma": "/ramsharma",
+    "Pandit Suresh Mishra": "/sureshmishra",
+    "Pandit Ramesh Tiwari": "/rameshtiwari",
+    "Pandit Anil Sharma": "/anilsharma",
+    "Pandit Ram Tripathi": "/ramtripathi",
+    "Pandit Mohan Joshi": "/mohanjoshi",
+    "Pandit Bhola Koirala": "/bholakoirala",
+    "Pandit Dinesh Acharya": "/dineshacharya",
+  };
+
   const handleBookNow = () => {
     if (!isAuthenticated) {
       navigate("/signin");
       return;
     }
 
-    const panditPath = `/${pandit.name.toLowerCase().replace(/\s+/g, "")}`;
-    navigate(panditPath);
+    const path = panditRoutes[pandit.name];
+    if (path) {
+      navigate(path);
+    } else {
+      console.warn("No route defined for this Pandit");
+    }
   };
 
-  // CALL LOGIC
   const handleCall = () => {
     if (!isAuthenticated) {
       navigate("/signin");
@@ -46,18 +57,15 @@ const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
   return (
     <div className="pandit-card">
       <img src={pandit.image} alt={pandit.name} className="pandit-image" />
-
       <div className="pandit-details">
         <h3 className="pandit-name">{pandit.name}</h3>
         <p className="pandit-experience">{pandit.experience}</p>
-
         <div className="pandit-rating">
           {"★".repeat(Math.round(pandit.rating))}{" "}
           <span>
             {pandit.rating} ({pandit.reviews} reviews)
           </span>
         </div>
-
         <div className="pandit-specializations">
           {pandit.specializations.map((spec, index) => (
             <div key={index} className="specialty-box">
@@ -66,7 +74,6 @@ const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
             </div>
           ))}
         </div>
-
         <div className="pandit-footer">
           <button className="call-btn" onClick={handleCall}>
             📞 Call
@@ -162,13 +169,11 @@ const Pandits: React.FC = () => {
       <p className="pandits-subtitle">
         Book trusted and experienced pandits for your rituals
       </p>
-
       <div className="pandits-grid">
         {pandits.map((p) => (
           <PanditCard key={p.id} pandit={p} />
         ))}
       </div>
-
       <div className="browse-pandits-section">
         <p className="browse-text">
           Looking for a specific type of ceremony or location?
