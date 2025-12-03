@@ -1,6 +1,9 @@
-import React from "react";
-import "./Pandits.css";
+// src/components/Pandits.tsx
+
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Pandits.css";
+import { AuthContext } from "../contexts/AuthContext";
 
 type Pandit = {
   id: number;
@@ -15,35 +18,28 @@ type Pandit = {
 const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
   const navigate = useNavigate();
 
-  const handleBookNow = () => {
-    const isSignedUp = localStorage.getItem("isSignedUp") === "true";
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  // Read user from AuthContext
+  const { user } = useContext(AuthContext);
+  const isAuthenticated = !!user;
 
-    if (isLoggedIn) {
-      const panditPath = `/${pandit.name.toLowerCase().replace(/\s+/g, "")}`;
-      navigate(panditPath);
-    } else if (isSignedUp) {
+  // BOOK NOW LOGIC
+  const handleBookNow = () => {
+    if (!isAuthenticated) {
       navigate("/signin");
-    } else {
-      navigate("/signup");
+      return;
     }
+
+    const panditPath = `/${pandit.name.toLowerCase().replace(/\s+/g, "")}`;
+    navigate(panditPath);
   };
 
+  // CALL LOGIC
   const handleCall = () => {
-    const isSignedUp = localStorage.getItem("isSignedUp") === "true";
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-    if (!isSignedUp) {
-      navigate("/signup");
-      return;
-    }
-
-    if (!isLoggedIn) {
+    if (!isAuthenticated) {
       navigate("/signin");
       return;
     }
 
-    // If user is logged in, navigate to CallPage and pass pandit data
     navigate("/call", { state: { pandit } });
   };
 
