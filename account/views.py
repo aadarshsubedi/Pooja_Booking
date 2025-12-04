@@ -16,8 +16,10 @@ def signup_view(request):
     POST: { username, email, password, role }
     Returns access + refresh tokens and user info.
     """
+    print("RAW signup request.data:",request.data)
     serializer = SignupSerializer(data=request.data)
     if not serializer.is_valid():
+        print("Signup serializer errors:", serializer.errors)
         return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=400)
 
     user = serializer.save()
