@@ -84,9 +84,20 @@ export async function signupUser(payload: SignupData) {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(payload),
   });
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(data.message || 'Signup failed');
+  const data = await res.json().catch(()=>({}));
+    if (!res.ok) {
+    // 👇 Log full backend response including serializer.errors
+    console.error("Signup failed:", data);
+
+    // Try to extract a more specific message from errors
+    let msg = data.message || 'Signup failed';
+    if (data.errors) {
+      const firstField = Object.keys(data.errors)[0];
+      if (firstField && Array.isArray(data.errors[firstField]) && data.errors[firstField][0]) {
+        msg = data.errors[firstField][0];
+      }
+    }
+    throw new Error(msg);
   }
   if (data.access && data.refresh) {
     setTokens(data.access, data.refresh);
