@@ -1,4 +1,3 @@
-// Ramtripathi.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Ramtripathi.css";
@@ -8,7 +7,6 @@ const Ramtripathi: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // DIFFERENT BOOKED DATES FOR RAM TRIPATHI
   const bookedDates = {
     "2025-02-10": true,
     "2025-02-14": true,
@@ -24,28 +22,31 @@ const Ramtripathi: React.FC = () => {
     }
 
     navigate("/booking", {
-      state: { 
+      state: {
         panditName: "Ram Tripathi",
-        date: selectedDate 
-      }
+        date: selectedDate,
+      },
     });
   };
 
   return (
-    <div className="profile-section">
+    <div className="page-container">
+
       {/* Profile Card */}
-      <div className="profile-card">
-        <div className="profile-pic" />
-        <div className="profile-info">
-          <h2>Ram Tripathi</h2>
-          <p>
-            Specialist in Griha Pravesh, Graha Shanti, and Rishi Panchami ceremonies | 18 years experience.
-          </p>
+      <div className="card-wrapper">
+        <div className="profile-card-horizontal">
+          <div className="avatar-circle"></div>
+          <div className="profile-text">
+            <h2>Ram Tripathi</h2>
+            <p>
+              Specialist in Griha Pravesh, Graha Shanti, and Rishi Panchami ceremonies | 18 years experience.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* About Section */}
-      <div className="about-section">
+      <div className="about-section content-align">
         <h3>About</h3>
         <p>
           Pandit Ram Tripathi has 18 years of experience conducting Nepali rituals including Griha Pravesh, Graha Shanti, and Rishi Panchami, ensuring meaningful and smooth ceremonies.
@@ -53,22 +54,23 @@ const Ramtripathi: React.FC = () => {
       </div>
 
       {/* Availability Section */}
-      <div className="availability-section">
+      <div className="availability-section content-align">
         <h3>Availability</h3>
         <div className="calendar-container">
           <PanditCalendar
             panditName="Ram Tripathi"
-            bookedDates={bookedDates}     // 📌 UNIQUE BOOKED DATES
+            bookedDates={bookedDates}
             onDateSelect={(date) => setSelectedDate(date)}
           />
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="form-buttons">
-        <button className="back">Back</button>
+      <div className="form-buttons content-align">
+        <button className="back" onClick={() => navigate(-1)}>Back</button>
         <button className="next" onClick={handleSelect}>Next</button>
       </div>
+
     </div>
   );
 };

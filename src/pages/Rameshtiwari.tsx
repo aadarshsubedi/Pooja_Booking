@@ -1,4 +1,3 @@
-// src/pages/Rameshtiwari.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Rameshtiwari.css";
@@ -8,7 +7,7 @@ const Rameshtiwari: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const bookedDates: Record<string, boolean> = {
+  const bookedDates = {
     "2025-02-09": true,
     "2025-02-18": true,
     "2025-02-26": true,
@@ -30,39 +29,33 @@ const Rameshtiwari: React.FC = () => {
     });
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
-    <div className="pandit-page">
+    <div className="page-container">
 
       {/* PROFILE CARD */}
-      <div className="profile-card">
-        <div className="profile-pic"></div>
-
-        <div className="profile-info">
-          <h3 className="profile-name">Anil Sharma</h3>
-          <p className="profile-text">
-            Experienced Vedic Pandit delivering sacred rituals with devotion and authenticity. |
-            10 years of experience.
-          </p>
+      <div className="card-wrapper">
+        <div className="profile-card-horizontal">
+          <div className="avatar-circle"></div>
+          <div className="profile-text">
+            <h2>Ramesh Tiwari</h2>
+            <p>
+              Experienced Vedic Pandit delivering sacred rituals with devotion and authenticity. | 10 years of experience.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* ABOUT */}
-      <div className="card">
+      <div className="about-section content-align">
         <h3>About</h3>
         <p>
-          Pandit Ramesh Tiwari specializes in traditional Nepali rituals such as
-          Graha Shanti, Rudri Puja, and Satyanarayan Pooja. With over two decades
-          of experience, he is known for performing ceremonies with devotion,
-          clarity, and adherence to authentic Vedic procedures.
+          Pandit Ramesh Tiwari specializes in traditional Nepali rituals such as Graha Shanti, Rudri Puja, and Satyanarayan Pooja. 
+          With over two decades of experience, he is known for performing ceremonies with devotion, clarity, and adherence to authentic Vedic procedures.
         </p>
       </div>
 
       {/* AVAILABILITY */}
-      <div className="card">
+      <div className="availability-section content-align">
         <h3>Availability</h3>
         <div className="calendar-container">
           <PanditCalendar
@@ -71,23 +64,14 @@ const Rameshtiwari: React.FC = () => {
             onDateSelect={(date) => setSelectedDate(date)}
           />
         </div>
-
-        {selectedDate && (
-          <p className="selected-date">
-            Selected date: <strong>{selectedDate}</strong>
-          </p>
-        )}
       </div>
 
       {/* BUTTONS */}
-      <div className="buttons">
-        <button className="btn back" onClick={handleBack}>
-          Back
-        </button>
-        <button className="btn next" onClick={handleSelect}>
-          Next
-        </button>
+      <div className="form-buttons content-align">
+        <button className="back" onClick={() => navigate(-1)}>Back</button>
+        <button className="next" onClick={handleSelect}>Next</button>
       </div>
+
     </div>
   );
 };

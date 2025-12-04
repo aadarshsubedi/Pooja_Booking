@@ -1,96 +1,102 @@
+/* ---------------- NAVBAR ---------------- */
 .navbar {
+  width: 100%;
+  height: 75px; /* fixed height */
+  background: linear-gradient(to right, #f4a045, #f6b35b);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(#f39842,#edb25a);
-  padding: 5px 20px;
-  color: black;
-  font-weight: 600;
-  height: 80px;
+  padding: 0 35px;
   box-sizing: border-box;
-  width: 100%; /* fix horizontal scroll */
-  margin: 0;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden; /* ensures nothing exceeds navbar height */
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-}
-
+/* ---------------- LOGO ---------------- */
 .logo img {
-  height: 40px;
-  width: auto;
-  transform: scale(2.5);
-  transform-origin: left center;
-  position: relative;
-  left: 10px;
-  top: 5px; 
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 15px;
-  padding: 0;
-  margin: 0;
-  align-items: center;
-}
-
-.nav-links li {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  height: 60px;                 /* less than navbar height */
+  object-fit: contain;
+  display: block;
+  margin-top: -4px;             /* vertical center */
+  transform: scale(1.2);        /* visually bigger */
+  transform-origin: center;
+  transition: transform 0.2s ease;
   cursor: pointer;
 }
-.nav-links li:hover { color: #a52a2a; }
 
-.nav-links li img.nav-icon {
+.logo img:hover {
+  transform: scale(1.25);       /* optional hover effect */
+}
+
+/* ---------------- NAV LINKS ---------------- */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 35px;
+  align-items: center;
+}
+
+.nav-links li a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #000;
+  font-size: 16px;
+  text-decoration: none;       /* no underline */
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+/* link hover: pop up & red (no underline) */
+.nav-links li a:hover {
+  color: #b90000;              /* pop up slightly */
+}
+
+/* icons exactly like screenshot (black) */
+.nav-icon {
   width: 20px;
   height: 20px;
+  transition: transform 0.2s ease;
 }
 
-.nav-buttons button {
-  margin-left: 10px;
-}
-
-.signup {
-  background-color: #BA0000;
-  color: #FFECC8;
-  width: 100px;
-  height: 40px;
-  border-radius: 15px;
-  border: none;
-  cursor: pointer;
-}
-.signup:hover {
-  background-color: #FBB44C;
-  color: #BA0000;
-  transform: scale(1.0);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
-}
-
-.signin {
-  background-color: transparent;
-  border: 1.5px solid #BA0000;
-  color: #BA0000;
-  width: 100px;
-  height: 40px;
-  border-radius: 15px;
-  cursor: pointer;
-}
-.signin:hover {
-  background-color: #BA0000;
-  color: #FBB44C;
-  transform: scale(1.0);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: inherit;
+/* ---------------- SIGNUP / SIGNIN BUTTONS ---------------- */
+.nav-buttons {
   display: flex;
+  gap: 15px;
   align-items: center;
-  gap: 5px;
 }
-.nav-links a:visited { color: inherit; }
-.nav-links a:hover { color: inherit; }
+
+/* SIGN UP (filled red, round) */
+.signup {
+  background: #b90000;
+  color: #fff;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.signup:hover {
+  background: #8a0000;
+}
+
+/* SIGN IN (red outline, round) */
+.signin {
+  background: transparent;
+  color: #b90000;
+  padding: 10px 22px;
+  border: 2px solid #b90000;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.signin:hover {
+  background: #b90000;
+  color: #fff;
+}

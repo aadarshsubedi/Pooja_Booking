@@ -1,4 +1,3 @@
-// Bholakoirala.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Bholakoirala.css";
@@ -8,7 +7,6 @@ const Bholakoirala: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // 🔴 Booked dates for Bhola Koirala
   const bookedDates = {
     "2025-11-03": true,
     "2025-11-07": true,
@@ -32,20 +30,23 @@ const Bholakoirala: React.FC = () => {
   };
 
   return (
-    <div className="profile-section">
+    <div className="page-container">
+
       {/* Profile Card */}
-      <div className="profile-card">
-        <div className="profile-pic" />
-        <div className="profile-info">
-          <h2>Bhola Koirala</h2>
-          <p>
-            Experienced in Griha Pravesh, Bratabandha, and Annaprashan ceremonies | 14 years of experience.
-          </p>
+      <div className="card-wrapper">
+        <div className="profile-card-horizontal">
+          <div className="avatar-circle"></div>
+          <div className="profile-text">
+            <h2>Bhola Koirala</h2>
+            <p>
+              Experienced in Griha Pravesh, Bratabandha, and Annaprashan ceremonies | 14 years of experience.
+            </p>
+          </div>
         </div>
       </div>
 
       {/* About Section */}
-      <div className="about-section">
+      <div className="about-section content-align">
         <h3>About</h3>
         <p>
           Pandit Bhola Koirala brings 14 years of experience in conducting Nepali rituals including Griha Pravesh, Bratabandha, and Annaprashan, ensuring each ceremony is auspicious and smooth.
@@ -53,24 +54,23 @@ const Bholakoirala: React.FC = () => {
       </div>
 
       {/* Availability Section */}
-      <div className="availability-section">
+      <div className="availability-section content-align">
         <h3>Availability</h3>
         <div className="calendar-container">
           <PanditCalendar
             panditName="Bhola Koirala"
-            bookedDates={bookedDates} // 📌 UNIQUE BOOKED DATES
+            bookedDates={bookedDates}
             onDateSelect={(date) => setSelectedDate(date)}
           />
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="form-buttons">
+      <div className="form-buttons content-align">
         <button className="back">Back</button>
-        <button className="next" onClick={handleSelect}>
-          Next
-        </button>
+        <button className="next" onClick={handleSelect}>Next</button>
       </div>
+
     </div>
   );
 };

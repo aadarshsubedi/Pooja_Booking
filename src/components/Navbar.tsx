@@ -1,62 +1,90 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [profileOpen, setProfileOpen] = useState<boolean>(false);
 
   const handleLogoClick = () => {
     navigate("/home");
     window.location.reload();
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setProfileOpen(false);
+    navigate("/home");
+  };
+
   return (
     <nav className="navbar">
-      <div className="logo">
-        <img
-          src="/images/logo.png"
-          alt="Pooja Booking"
-          style={{ cursor: "pointer" }}
-          onClick={handleLogoClick}
-        />
+      {/* === LOGO === */}
+      <div className="logo" onClick={handleLogoClick}>
+        <img src="/images/logo.png" alt="Pooja Booking" />
       </div>
 
+      {/* === NAV LINKS === */}
       <ul className="nav-links">
         <li>
           <Link to="/home">
-            <img src="/images/home.png" alt="Home" className="nav-icon" />
-            Home
+            <img src="/images/home.png" className="nav-icon" /> Home
           </Link>
         </li>
         <li>
           <Link to="/poojas">
-            <img src="/images/poojas.png" alt="Poojas" className="nav-icon" />
-            Poojas
+            <img src="/images/poojas.png" className="nav-icon" /> Poojas
           </Link>
         </li>
         <li>
           <Link to="/pandits">
-            <img src="/images/pandits.png" alt="Pandits" className="nav-icon" />
-            Pandits
+            <img src="/images/pandits.png" className="nav-icon" /> Pandits
           </Link>
         </li>
         <li>
           <Link to="/aboutus">
-            <img src="/images/aboutus.png" alt="About Us" className="nav-icon" />
-            About Us
+            <img src="/images/aboutus.png" className="nav-icon" /> About Us
           </Link>
         </li>
       </ul>
 
-      {/* UPDATED BUTTONS */}
+      {/* === BUTTONS / PROFILE === */}
       <div className="nav-buttons">
-        <button className="signup" onClick={() => navigate("/signup")}>
-          Sign Up
-        </button>
-        <button className="signin" onClick={() => navigate("/signin")}>
-          Sign In
-        </button>
+        {!isLoggedIn ? (
+          <>
+            <button className="signup" onClick={() => navigate("/signup")}>
+              Sign Up
+            </button>
+            <button className="signin" onClick={() => navigate("/signin")}>
+              Sign In
+            </button>
+          </>
+        ) : (
+          <div className="profile-dropdown">
+            <button
+              className="profile-btn"
+              onClick={() => setProfileOpen(!profileOpen)}
+            >
+              Profile
+            </button>
+
+            {profileOpen && (
+              <div className="dropdown-menu">
+                <button
+                  className="dropdown-item"
+                  onClick={() => navigate("/userprofile")}
+                >
+                  My Profile
+                </button>
+                <button className="dropdown-item" onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );
