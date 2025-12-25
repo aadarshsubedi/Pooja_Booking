@@ -31,19 +31,29 @@ const PanditCard: React.FC<{ pandit: Pandit }> = ({ pandit }) => {
     "Pandit Dinesh Acharya": "/dineshacharya",
   };
 
-  const handleBookNow = () => {
-    if (!isAuthenticated) {
-      navigate("/signin");
-      return;
-    }
+ const handleBookNow = () => {
+  if (!isAuthenticated) {
+    navigate("/signin");
+    return;
+  }
 
-    const path = panditRoutes[pandit.name];
-    if (path) {
-      navigate(path);
-    } else {
-      console.warn("No route defined for this Pandit");
-    }
-  };
+  // 1️⃣ Store selected pandit info for BookingForm/backend
+  localStorage.setItem("selectedPanditId", String(pandit.id));
+  localStorage.setItem("selectedPanditName", pandit.name);
+
+  // 2️⃣ (Optional) you can still go to the pandit detail page **if you like**
+  //    BUT we MUST end up at the booking flow later using the stored ID.
+  const path = panditRoutes[pandit.name];
+
+  if (path) {
+    // If you want a detail page first, keep this:
+    navigate(path);
+  } else {
+    // If you want to jump directly to the booking/calendar page instead, use:
+    // navigate("/booking"); or navigate("/calendar");
+    navigate("/booking");
+  }
+};
 
   const handleCall = () => {
     if (!isAuthenticated) {
