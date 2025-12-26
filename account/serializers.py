@@ -1,6 +1,7 @@
 # account/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from .models import PanditProfile
 
 User = get_user_model()
 
@@ -24,3 +25,30 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'role')
+
+class PanditProfileSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source="user.username")
+    email = serializers.ReadOnlyField(source="user.email")
+    specializations_list = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PanditProfile
+        fields = (
+            "id",
+            "username",
+            "email",
+            "full_name",
+            "city",
+            "experience_years",
+            "bio",
+            "specializations",
+            "specializations_list",
+            "rating",
+            "reviews_count",
+            "image_url",
+            "is_approved",
+        )
+        read_only_fields = ("rating", "reviews_count", "is_approved")
+
+    def get_specializations_list(self, obj):
+        return obj.specialties_list()

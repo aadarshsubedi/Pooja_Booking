@@ -6,8 +6,10 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from .models import PanditProfile
+from .serializers import PanditProfileSerializer
 from .serializers import SignupSerializer, UserSerializer
+from django.shortcuts import get_object_or_404
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -88,3 +90,48 @@ def logout_view(request):
         return Response({'message': 'Logout successful.'}, status=200)
     except Exception as e:
         return Response({'message': 'Invalid token or already blacklisted.'}, status=400)
+    
+    
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def pandit_list_view(request):
+    """
+    Public list of approved pandits.
+    GET /api/pandits/
+    """
+    qs = PanditProfile.objects.filter(is_approved=True).select_related("user")
+    serializer = PanditProfileSerializer(qs, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def pandit_detail_view(request, pk):
+    """
+    Public detail of a pandit by profile id.
+    GET /api/pandits/<id>/
+    """
+    profile = get_object_or_404(PanditProfile, pk=pk, is_approved=True)
+    serializer = PanditProfileSerializer(profile)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST", "PUT"])
+@permission_classes([IsAuthenticated])
+def my_pandit_profile_view(request):
+    """
+    Create or update current user's PanditProfile.
+    Only for users with role='Pandit'.
+    POST/PUT /api/pandits/me/
+    """
+    user = request.user
+    if (user.role or "" ).lower()!= "pandit":   # adjust if your choice values differ
+        return Response({"message": "Only pandits can create profiles."}, status=403)
+
+    profile, _ = PanditProfile.objects.get_or_create(user=user)
+    serializer = PanditProfileSerializer(profile, data=request.data, partial=True)
+    if serializer.is_valid():
+        # do not let user set is_approved from frontend
+        serializer.save()
+        return Response(serializer.data, status=200)
+    return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)

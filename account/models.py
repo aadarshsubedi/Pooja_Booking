@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = (
@@ -10,3 +11,32 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.role})"
+
+class PanditProfile(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="pandit_profile",
+    )
+    full_name = models.CharField(max_length=150)
+    city = models.CharField(max_length=100, blank=True)
+    experience_years = models.PositiveIntegerField(default=0)
+    bio = models.TextField(blank=True)
+
+    # simple comma-separated specializations: "Griha Pravesh, Satyanarayan"
+    specializations = models.CharField(max_length=255, blank=True)
+
+    rating = models.FloatField(default=0.0)
+    reviews_count = models.PositiveIntegerField(default=0)
+
+    image_url = models.URLField(blank=True)  # or ImageField if you set MEDIA
+
+    is_approved = models.BooleanField(default=False)  # admin toggles this
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"PanditProfile({self.user.username})"
+
+    def specialties_list(self):
+        return [s.strip() for s in self.specializations.split(",") if s.strip()]

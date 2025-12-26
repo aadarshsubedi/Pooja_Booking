@@ -17,6 +17,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import CustomUser
+from .models import PanditProfile
 
 
 # ---------- CUSTOM ACTIONS ----------
@@ -91,3 +92,9 @@ class CustomUserAdmin(BaseUserAdmin):
 admin.site.site_header = "Pooja Booking Admin"
 admin.site.site_title = "Pooja Booking Admin"
 admin.site.index_title = "Administration"
+
+@admin.register(PanditProfile)
+class PanditProfileAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "full_name", "city", "experience_years", "is_approved")
+    list_filter = ("is_approved", "city")
+    search_fields = ("full_name", "user__username", "city")
