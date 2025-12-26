@@ -27,6 +27,8 @@ import Signin from "./pages/Signin";
 import CallPage from "./pages/callpage";
 import MessageInterface from "./pages/messageinterface";
 import ScrollToTop from "./utils/scrolltotop";
+import PanditSetup from "./pages/PanditSetup";
+
 
 import "./App.css";
 
@@ -81,6 +83,7 @@ const App: React.FC = () => {
           <Route path="/mohanjoshi" element={<Mohanjoshi />} />
           <Route path="/bholakoirala" element={<Bholakoirala />} />
           <Route path="/dineshacharya" element={<Dineshacharya />} />
+          <Route path="/pandit-setup" element={<PanditSetup />} />
 
           <Route path="/booking" element={<BookingForm />} />
           <Route path="/payment" element={<PaymentPage />} />

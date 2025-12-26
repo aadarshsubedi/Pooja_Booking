@@ -24,17 +24,33 @@ const Signup: React.FC = () => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await signup(formData.username, formData.email, formData.password, role);
-      alert(result?.message || `Signup successful as ${role}`);
-      closeModal();
-      navigate('/pandits');
-    } catch (err: any) {
-      alert(err?.message || 'An error occurred during signup.');
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  try {
+    const result = await signup(
+      formData.username,
+      formData.email,
+      formData.password,
+      role
+    );
+
+    alert(result?.message || `Signup successful as ${role}`);
+    closeModal();
+
+    // 👇 Decide where to go based on role
+    const backendRole = (result?.role || role || "").toLowerCase();
+
+    if (backendRole === "pandit") {
+      // newly signed-up pandit → go fill pandit profile
+      navigate("/pandit-setup");
+    } else {
+      // normal user → go to home (or wherever you want)
+      navigate("/home");
     }
-  };
+  } catch (err: any) {
+    alert(err?.message || "An error occurred during signup.");
+  }
+};
 
   return (
     <div className="signup-page">

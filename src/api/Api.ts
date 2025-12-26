@@ -203,6 +203,30 @@ export interface SigninData {
   username: string;
   password: string;
 }
+export interface BookingPayload {
+  pandit: number;              // pandit user id
+  pooja?: number | null;       // 👈 now OPTIONAL, can be omitted or null
+  date: string;                // "2025-12-31"
+  time: string;                // "10:30:00" or "10:30"
+  location: string;
+  notes?: string;
+  price?: number;
+}
+export interface PanditProfile {
+  id: number;
+  username: string;
+  email: string;
+  full_name: string;
+  city: string;
+  experience_years: number;
+  bio: string;
+  specializations: string;
+  specializations_list: string[];
+  rating: number;
+  reviews_count: number;
+  image_url: string;
+  is_approved: boolean;
+}
 
 function getAccessToken() {
   return localStorage.getItem("accessToken");
@@ -358,15 +382,7 @@ export async function logoutUser() {
 
 // ---------- BOOKING ----------
 
-export interface BookingPayload {
-  pandit: number;              // pandit user id
-  pooja?: number | null;       // 👈 now OPTIONAL, can be omitted or null
-  date: string;                // "2025-12-31"
-  time: string;                // "10:30:00" or "10:30"
-  location: string;
-  notes?: string;
-  price?: number;
-}
+
 
 export async function createBooking(payload: BookingPayload) {
   const res = await authFetch("/bookings/", {
@@ -387,5 +403,34 @@ export async function createBooking(payload: BookingPayload) {
     throw new Error(msg);
   }
 
+  return data;
+}
+// public list of pandits
+export async function fetchPandits(): Promise<PanditProfile[]> {
+  const res = await fetch(`${BASE_URL}/pandits/`);
+  if (!res.ok) throw new Error("Failed to load pandits");
+  return res.json();
+}
+
+// detail (if you want a detail page)
+export async function fetchPanditDetail(id: number): Promise<PanditProfile> {
+  const res = await fetch(`${BASE_URL}/pandits/${id}/`);
+  if (!res.ok) throw new Error("Failed to load pandit");
+  return res.json();
+}
+
+// create/update current pandit's profile (protected)
+export async function saveMyPanditProfile(
+  payload: Partial<PanditProfile>
+): Promise<PanditProfile> {
+  const res = await authFetch("/pandits/me/", {
+    method: "POST", // or "PUT"
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    console.error("Save pandit profile failed:", data);
+    throw new Error(data.message || "Failed to save profile");
+  }
   return data;
 }
