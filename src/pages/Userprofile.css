@@ -1,0 +1,122 @@
+/* PAGE BACKGROUND */
+.profile-page {
+  min-height: 100vh;
+  background: #fff4eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  padding: 40px 20px;
+}
+
+/* MAIN CARD */
+.profile-card-desktop {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(to bottom, #fff9f5, #ffd7b5);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
+}
+
+/* HEADER */
+.profile-header-desktop {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+/* AVATAR */
+.avatar-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 15px;
+  cursor: pointer;
+}
+
+.avatar-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.camera-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #ff8c42, #ff5e00);
+  color: #fff;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* TEXT */
+.profile-header-desktop h2 {
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+.username {
+  font-size: 14px;
+  color: black;
+}
+
+.location {
+  font-size: 14px;
+  color: black;
+}
+
+/* ACTION GRID */
+.profile-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  color: black;
+}
+
+/* ACTION CARD */
+.action-card {
+  background: white;
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.action-card.logout {
+  color: #c00000;
+  font-weight: 600;
+}
+
+/* EMPTY STATE */
+.profile-empty {
+  text-align: center;
+  color: black;
+}
+
+/* RESPONSIVE (DESKTOP WIDER) */
+@media (min-width: 900px) {
+  .profile-card-desktop {
+    max-width: 520px;
+    padding: 50px 40px;
+  }
+
+  .profile-actions-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,0 +1,50 @@
+/* ================= PAGE BACKGROUND ================= */
+.bookmarks-page {
+  min-height: calc(100vh - 75px); /* navbar height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff4eb; /* outside background */
+  padding: 40px 20px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================= MAIN CARD ================= */
+.bookmarks-main-card {
+  background: linear-gradient(to bottom, #fff9f5, #ffd7b5); /* card stays white */
+  border-radius: 20px;
+  padding: 40px 50px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+/* ================= TITLE ================= */
+.bookmarks-main-card h2 {
+  font-size: 26px;
+  margin-bottom: 16px;
+  color: #222;
+}
+
+/* ================= EMPTY STATE ================= */
+.empty-text {
+  font-size: 16px;
+  color: #666;
+}
+
+/* ================= BOOKMARK LIST ================= */
+.bookmark-list {
+  margin-top: 20px;
+}
+
+/* ================= INDIVIDUAL BOOKMARK ================= */
+.bookmark-item {
+  background: #f9fafb;
+  padding: 14px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 15px;
+  color: #333;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}

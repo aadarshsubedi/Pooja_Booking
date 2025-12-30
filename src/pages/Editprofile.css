@@ -1,0 +1,84 @@
+/* ================= PAGE BACKGROUND ================= */
+.edit-profile-page {
+  min-height: calc(100vh - 75px); /* navbar height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #fff4eb; /* ✅ OUTSIDE BACKGROUND */
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================= CARD ================= */
+.edit-profile-card {
+  width: 100%;
+  max-width: 460px;
+   background: linear-gradient(to bottom, #fff9f5, #ffd7b5); /* ✅ CARD STAYS WHITE */
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+/* ================= TITLE ================= */
+.edit-profile-card h2 {
+  margin-bottom: 22px;
+  font-size: 24px;
+  color: #222;
+}
+
+/* ================= AVATAR ================= */
+.edit-avatar {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.edit-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.change-photo {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 0;
+}
+
+/* ================= INPUTS ================= */
+.edit-profile-card input,
+.edit-profile-card select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+/* ================= BUTTON ================= */
+.edit-profile-card button {
+  width: 100%;
+  padding: 12px;
+  background: #ff7b00;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background 0.2s ease;
+}
+
+.edit-profile-card button:hover {
+  background: #e86f00;
+}

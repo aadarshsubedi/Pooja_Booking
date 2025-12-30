@@ -1,0 +1,38 @@
+/* PAGE HEIGHT FIX — NOTHING TO DO WITH NAVBAR/FOOTER */
+.my-location-page {
+  min-height: calc(100vh - 75px); /* navbar height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff4eb;
+  padding: 40px 20px;
+}
+
+/* CENTER CARD */
+.my-location-card {
+   background: linear-gradient(to bottom, #fff9f5, #ffd7b5);
+  padding: 40px 50px;
+  border-radius: 18px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+}
+
+/* TEXT */
+.my-location-card h2 {
+  font-size: 26px;
+  margin-bottom: 18px;
+  color: #222;
+}
+
+.my-location-card p {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #444;
+}
+
+.loading-text {
+  font-size: 15px;
+  color: #777;
+}

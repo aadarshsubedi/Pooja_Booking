@@ -21,6 +21,12 @@ import Dineshacharya from "./pages/Dineshacharya";
 
 import BookingForm from "./pages/Bookingform";
 import PaymentPage from "./pages/Paymentpage";
+import Editprofile from "./pages/Editprofile";
+import Changepassword from "./pages/Changepassword";
+import Mylocation from "./pages/Mylocation";
+import Userprofile from "./pages/userprofile";
+import Bookmarks from "./pages/Bookmarks";
+
 
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
@@ -90,6 +96,11 @@ const App: React.FC = () => {
 
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="/Userprofile" element={<Userprofile />} />
+          <Route path="/edit-profile" element={<Editprofile />} />
+          <Route path="/my-location" element={<Mylocation />} />
+          <Route path="change-password" element={<Changepassword />} />
+          <Route path="bookmarks" element={<Bookmarks/>} />
 
           <Route path="/call" element={<CallPage />} />
           <Route

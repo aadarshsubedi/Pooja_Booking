@@ -3,17 +3,15 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", Arial, sans-serif;
   background: #fffaf5;
   align-items: center;
-  justify-content: center; /* keeps container in middle */
-  padding-top: 0;
+  justify-content: center;
 }
 
-/* Top tagline slightly above container */
+/* Top tagline */
 .signup-top {
-  text-align: top;
-  margin-bottom: 60px; /* distance from container */
+  margin-bottom: 50px;
 }
 
 .tagline {
@@ -22,35 +20,31 @@
   font-weight: 500;
 }
 
-/* Signup box container */
+/* Signup box */
 .signup-container-box {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   background: linear-gradient(to bottom, #fff9f5, #ffeede);
   padding: 40px 30px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   text-align: center;
-  width: 400px;
-  max-width: 90%;
+  width: 420px;
+  max-width: 92%;
   border: 0.5px solid white;
 }
 
 .signup-container-box h2 {
   font-size: 30px;
-  font-family: "Poppins", sans-serif;
-  margin-bottom: 40px;
+  margin-bottom: 35px;
   color: black;
 }
 
 /* Signup Buttons */
 .signup-buttons {
   display: flex;
-  justify-content: center;
   gap: 20px;
-  flex-wrap: wrap;
 }
 
 .btn {
@@ -70,7 +64,7 @@
 
 .btn-user:hover {
   background: linear-gradient(90deg, #fa800d, #ff9e43);
-  transform: translateY(-1px); 
+  transform: translateY(-1px);
   box-shadow: 0 12px 25px rgba(0,0,0,0.2);
 }
 
@@ -80,18 +74,15 @@
 }
 
 .btn-pandit:hover {
-    background: linear-gradient(90deg, #ff5e00, #ff8c42);
-  transform: translateY(-1px); 
+  background: linear-gradient(90deg, #ff5e00, #ff8c42);
+  transform: translateY(-1px);
   box-shadow: 0 12px 25px rgba(0,0,0,0.2);
 }
 
-/* Modal */
+/* Modal overlay */
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
@@ -99,15 +90,16 @@
   z-index: 1000;
 }
 
+/* Modal card (bigger for full user form) */
 .modal-content {
   background: #fff;
-  padding: 30px 30px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
+  padding: 30px;
+  border-radius: 12px;
+  width: 95%;
+  max-width: 480px; /* ⬅ bigger for full details */
   text-align: center;
   position: relative;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
 .modal-content h3 {
@@ -115,33 +107,46 @@
   color: #333;
 }
 
+/* Close */
 .close-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   cursor: pointer;
   font-size: 22px;
   color: black;
-  transition: color 0.2s ease;
 }
 
-.close-btn:hover {
-  color: #000;
+/* Form layout */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.modal-content form input {
+/* Inputs & selects */
+.signup-form input,
+.signup-form select {
   width: 100%;
-  padding: 10px;
-  margin: 12px 0;
+  padding: 12px;
   border: 1px solid #ccc;
   background: linear-gradient(to bottom, #fff9f5, #ffeede);
   border-radius: 6px;
   font-size: 14px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 
+.signup-form input:focus,
+.signup-form select:focus {
+  outline: none;
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 2px rgba(255, 140, 66, 0.25);
+}
+
+/* Submit */
 .submit-btn {
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   background: linear-gradient(90deg, #ff8c42, #ff5e00);
   color: #ffffff;
   border: none;
@@ -149,17 +154,23 @@
   font-size: 16px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 10px;
-  transition: background 0.3s ease;
+  margin-top: 8px;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .submit-btn:hover {
   background: #f9830c;
+  transform: translateY(-1px);
 }
 
 /* Responsive */
-@media (max-width: 500px) {
+@media (max-width: 520px) {
   .signup-buttons {
     flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
   }
 }

@@ -9,23 +9,23 @@
   padding: 0 35px;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
-  overflow: hidden; /* ensures nothing exceeds navbar height */
+  overflow: hidden;
 }
 
 /* ---------------- LOGO ---------------- */
 .logo img {
-  height: 60px;                 /* less than navbar height */
+  height: 60px;
   object-fit: contain;
   display: block;
-  margin-top: -4px;             /* vertical center */
-  transform: scale(1.2);        /* visually bigger */
+  margin-top: -4px;
+  transform: scale(1.2);
   transform-origin: center;
   transition: transform 0.2s ease;
   cursor: pointer;
 }
 
 .logo img:hover {
-  transform: scale(1.25);       /* optional hover effect */
+  transform: scale(1.25);
 }
 
 /* ---------------- NAV LINKS ---------------- */
@@ -42,31 +42,30 @@
   gap: 6px;
   color: #000;
   font-size: 16px;
-  text-decoration: none;       /* no underline */
+  text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-/* link hover: pop up & red (no underline) */
 .nav-links li a:hover {
-  color: #b90000;              /* pop up slightly */
+  color: #b90000;
 }
 
-/* icons exactly like screenshot (black) */
+/* icons */
 .nav-icon {
   width: 20px;
   height: 20px;
   transition: transform 0.2s ease;
 }
 
-/* ---------------- SIGNUP / SIGNIN BUTTONS ---------------- */
+/* ---------------- BUTTON CONTAINER ---------------- */
 .nav-buttons {
   display: flex;
   gap: 15px;
   align-items: center;
 }
 
-/* SIGN UP (filled red, round) */
+/* ---------------- SIGN UP BUTTON ---------------- */
 .signup {
   background: #b90000;
   color: #fff;
@@ -76,14 +75,14 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 15px;
-  transition: 0.2s;
+  transition: background 0.2s ease;
 }
 
 .signup:hover {
   background: #8a0000;
 }
 
-/* SIGN IN (red outline, round) */
+/* ---------------- SIGN IN BUTTON ---------------- */
 .signin {
   background: transparent;
   color: #b90000;
@@ -93,10 +92,36 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 15px;
-  transition: 0.2s;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .signin:hover {
   background: #b90000;
   color: #fff;
+}
+
+/* ================================================= */
+/* ========== PROFILE AVATAR BUTTON (NEW) =========== */
+/* ================================================= */
+
+.profile-avatar {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.profile-avatar img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-avatar img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }

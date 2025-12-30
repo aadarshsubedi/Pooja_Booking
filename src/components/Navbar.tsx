@@ -1,32 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./Navbar.css";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [profileOpen, setProfileOpen] = useState<boolean>(false);
-
-  const handleLogoClick = () => {
-    navigate("/home");
-    window.location.reload();
+  const syncLoginState = () => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setProfileOpen(false);
-    navigate("/home");
-  };
+  useEffect(() => {
+    // initial check
+    syncLoginState();
+
+    // ✅ listen to SAME-TAB auth updates
+    window.addEventListener("auth-change", syncLoginState);
+
+    return () => {
+      window.removeEventListener("auth-change", syncLoginState);
+    };
+  }, []);
 
   return (
     <nav className="navbar">
-      {/* === LOGO === */}
-      <div className="logo" onClick={handleLogoClick}>
+      <div className="logo" onClick={() => navigate("/home")}>
         <img src="/images/logo.png" alt="Pooja Booking" />
       </div>
 
-      {/* === NAV LINKS === */}
       <ul className="nav-links">
         <li>
           <Link to="/home">
@@ -50,7 +51,6 @@ const Navbar: React.FC = () => {
         </li>
       </ul>
 
-      {/* === BUTTONS / PROFILE === */}
       <div className="nav-buttons">
         {!isLoggedIn ? (
           <>
@@ -62,28 +62,13 @@ const Navbar: React.FC = () => {
             </button>
           </>
         ) : (
-          <div className="profile-dropdown">
-            <button
-              className="profile-btn"
-              onClick={() => setProfileOpen(!profileOpen)}
-            >
-              Profile
-            </button>
-
-            {profileOpen && (
-              <div className="dropdown-menu">
-                <button
-                  className="dropdown-item"
-                  onClick={() => navigate("/userprofile")}
-                >
-                  My Profile
-                </button>
-                <button className="dropdown-item" onClick={handleLogout}>
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+          <button
+            className="profile-avatar"
+            onClick={() => navigate("/userprofile")}
+          >
+            {/* ✅ also fix path (public folder) */}
+            <img src="/images/profile.jpg" alt="Profile" />
+          </button>
         )}
       </div>
     </nav>
