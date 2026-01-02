@@ -1,7 +1,7 @@
 from django.urls import path
-from . import views
+from .views import create_booking_view, pandit_booked_slots_view
 
 urlpatterns = [
-    path('bookings/', views.create_booking_view, name='create_booking'),
-    # you can add more later: list bookings, update status, etc.
+    path('bookings/', create_booking_view, name='create_booking'),
+    path("pandits/<int:pandit_id>/booked-slots/", pandit_booked_slots_view, name="pandit_booked_slots"),
 ]

@@ -30,6 +30,7 @@ def signup_view(request):
     return Response({
         'message': 'Signup successful',
         'username': user.username,
+        'email': user.email,
         'role': user.role,
         'access': str(refresh.access_token),
         'refresh': str(refresh),
@@ -55,6 +56,7 @@ def signin_view(request):
     return Response({
         'message': 'Signin successful',
         'username': user.username,
+        'email': user.email,
         'role': user.role,
         'access': str(refresh.access_token),
         'refresh': str(refresh),
@@ -71,7 +73,8 @@ def current_user_view(request):
     user = request.user
     return Response({
         'username': user.username,
-        'role': user.role
+        'role': user.role,
+        'email': user.email
     }, status=200)
 
 @api_view(['POST'])
@@ -99,9 +102,9 @@ def pandit_list_view(request):
     Public list of approved pandits.
     GET /api/pandits/
     """
-    qs = PanditProfile.objects.filter(is_approved=True).select_related("user")
-    serializer = PanditProfileSerializer(qs, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    pandits = PanditProfile.objects.filter(is_approved=True).select_related("user")
+    serializer = PanditProfileSerializer(pandits, many=True)
+    return Response(serializer.data, status=200)
 
 
 @api_view(["GET"])

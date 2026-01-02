@@ -27,14 +27,16 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'role')
 
 class PanditProfileSerializer(serializers.ModelSerializer):
-    username = serializers.ReadOnlyField(source="user.username")
-    email = serializers.ReadOnlyField(source="user.email")
+    user_id = serializers.IntegerField(source="user.id", read_only=True)
+    username = serializers.CharField(source="user.username", read_only=True)
+    email = serializers.EmailField(source="user.email", read_only=True)
     specializations_list = serializers.SerializerMethodField()
 
     class Meta:
         model = PanditProfile
         fields = (
             "id",
+            "user_id",
             "username",
             "email",
             "full_name",
