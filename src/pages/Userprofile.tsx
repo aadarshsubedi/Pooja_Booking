@@ -18,9 +18,27 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
-    if (stored) setUser(JSON.parse(stored));
-  }, []);
+  if (stored) {
+    setUser(JSON.parse(stored));
+    return;
+  }
+  const username = localStorage.getItem("username");
+  const email = localStorage.getItem("userEmail") || "";
 
+  if (username) {
+    const basicProfile: UserProfileData = {
+      fullName: username,
+      username,
+      email,
+      phone: "",
+      address: "",
+      avatar: "",
+    };
+    setUser(basicProfile);
+    localStorage.setItem("userProfile", JSON.stringify(basicProfile));
+  }
+}, []);
+ 
   const handleImageClick = () => fileInputRef.current?.click();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,10 +55,16 @@ const UserProfile: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    window.dispatchEvent(new Event("auth-change"));
-    navigate("/home");
-  };
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("userProfile");
+  localStorage.removeItem("userRole");
+  localStorage.removeItem("username");
+  localStorage.removeItem("userEmail");
+  window.dispatchEvent(new Event("auth-change"));
+  navigate("/home");
+};
 
   if (!user) return <p className="profile-empty">No profile data found.</p>;
 

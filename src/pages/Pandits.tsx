@@ -213,13 +213,14 @@ const PanditCard: React.FC<{ pandit: PanditProfile }> = ({ pandit }) => {
     }
 
     // store profile id (or later you can add user_id field in serializer)
-    localStorage.setItem("selectedPanditId", String(pandit.id));
+    localStorage.setItem("selectedPanditId", String(pandit.user_id));
     localStorage.setItem(
       "selectedPanditName",
       pandit.full_name || pandit.username
     );
 
     // go straight to booking flow or a detail page
+    // navigate(`/pandit/${pandit.id}`);
     navigate("/booking");
   };
 

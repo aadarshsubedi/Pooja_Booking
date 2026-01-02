@@ -12,7 +12,10 @@
   align-items: center;
   margin-bottom: 12px;
 }
-
+.time-slots button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 .arrow-btn {
   border: none;
   background: #eaeaea;

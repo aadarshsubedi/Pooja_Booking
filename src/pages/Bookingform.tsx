@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./BookingForm.css";
 import { createBooking } from "../api/Api";
 import { AuthContext } from "../contexts/AuthContext";
-
+import CurrentLocationMap from "../pages/Mylocation";
+import BookingCalendar from "../pages/Panditcalendar";
 interface LocationState {
   date?: string;
 }
@@ -23,18 +24,21 @@ const BookingForm: React.FC = () => {
   const panditId = storedPanditId ? parseInt(storedPanditId, 10) : undefined;
 
   const [poojaType, setPoojaType] = useState("");
-  const [date, setDate] = useState(selectedDateFromCalendar);
+  const [date, setDate] = useState<string>(selectedDateFromCalendar);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([
+  "Morning 6-8 AM",
+  "Afternoon 1-3 PM",
+  "Evening 5-7 PM",
+]);
   const [selectedTime, setSelectedTime] = useState("");
   const [location, setLocation] = useState("Detecting your location...");
 
   useEffect(() => {
     const detectedLocation = localStorage.getItem("detectedLocation");
-    if (detectedLocation) {
-      setLocation(detectedLocation);
-    } else {
-      setLocation("");
-    }
-  }, []);
+  if (detectedLocation) {
+    setLocation(detectedLocation);
+  }
+}, []);
 
   // For debugging: see what we actually have
   console.log("BookingForm debug:", {
@@ -140,32 +144,56 @@ const BookingForm: React.FC = () => {
 
       {/* Selected Date */}
       <div className="form-section date-section">
-        <label>📅 Selected Date</label>
-        <input type="text" value={date} readOnly />
-      </div>
+  <label>📅 Select Date</label>
+
+  {panditId ? (
+    <>
+      <BookingCalendar
+        panditId={panditId}
+        date={date}
+        onDateChange={(d) => {
+          setDate(d);
+          setSelectedTime(""); // reset time if date changes
+        }}
+        onAvailableSlotsChange={setAvailableSlots}
+      />
+      <input type="text" value={date} readOnly />
+    </>
+  ) : (
+    <p>Please select a pandit first.</p>
+  )}
+</div>
 
       {/* Time Slots */}
       <div className="form-section">
         <label>🕒 Select Time Slot</label>
         <div className="time-slots">
-          {["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"].map((slot) => (
-            <button
-              key={slot}
-              type="button"
-              className={selectedTime === slot ? "selected" : ""}
-              onClick={() => setSelectedTime(slot)}
-            >
-              {slot}
-            </button>
-          ))}
+          {["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"].map((slot) => {
+  const disabled = !availableSlots.includes(slot);
+  return (
+    <button
+      key={slot}
+      type="button"
+      disabled={disabled}
+      className={`${selectedTime === slot ? "selected" : ""} ${disabled ? "disabled" : ""}`}
+      onClick={() => !disabled && setSelectedTime(slot)}
+    >
+      {slot}
+    </button>
+  );
+})}
         </div>
       </div>
 
       {/* Location */}
       <div className="form-section">
-        <label>📍 Location</label>
-        <input type="text" value={location} readOnly />
-      </div>
+  <label>📍 Location</label>
+  {/* Read-only field that shows the address found by the map */}
+  <input type="text" value={location} readOnly />
+
+  {/* Map below updates the address */}
+  <CurrentLocationMap onAddressChange={setLocation} />
+</div>
 
       {/* Confirm & Pay */}
       <div className="form-section">
