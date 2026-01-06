@@ -1,5 +1,5 @@
 # account/views.py
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.decorators import api_view, authentication_classes, permission_classes,parser_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -10,6 +10,9 @@ from .models import PanditProfile
 from .serializers import PanditProfileSerializer
 from .serializers import SignupSerializer, UserSerializer
 from django.shortcuts import get_object_or_404
+from .serializers import UserProfileSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
+from .models import UserProfile
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -35,6 +38,33 @@ def signup_view(request):
         'access': str(refresh.access_token),
         'refresh': str(refresh),
     }, status=201)
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def upload_avatar_view(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+
+    serializer = UserProfileSerializer(
+        profile,
+        data=request.data,
+        partial=True,
+        context={"request": request},
+    )
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=200)
+
+    return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)
+
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def my_profile_view(request):
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    serializer = UserProfileSerializer(profile, context={"request": request})
+    return Response(serializer.data, status=200)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -71,10 +101,15 @@ def current_user_view(request):
     Requires Authorization: Bearer <access>
     """
     user = request.user
+    avatar_url = None
+    if hasattr(user, "profile") and user.profile.avatar:
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        avatar_url = request.build_absolute_uri(user.profile.avatar.url) if profile.avatar else None
     return Response({
         'username': user.username,
         'role': user.role,
-        'email': user.email
+        'email': user.email,
+        "avatar_url": avatar_url,
     }, status=200)
 
 @api_view(['POST'])

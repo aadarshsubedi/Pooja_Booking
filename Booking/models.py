@@ -55,3 +55,7 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"Booking #{self.id} by {self.user} for {self.pandit} on {self.date}"
+    payment_status = models.CharField(max_length=20, default="unpaid")  # unpaid/paid/failed
+    payment_method = models.CharField(max_length=20, blank=True, null=True)  # khalti/esewa/demo
+    payment_reference = models.CharField(max_length=100, blank=True, null=True)
+    paid_at = models.DateTimeField(blank=True, null=True)

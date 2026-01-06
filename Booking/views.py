@@ -6,6 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from datetime import date as date_cls
 from .models import Booking
 from .serializers import BookingSerializer
+from django.utils import timezone
 
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
@@ -71,3 +72,54 @@ def pandit_booked_slots_view(request, pandit_id):
         result.setdefault(d, []).append(t)
 
     return Response(result, status=200)
+
+
+
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def pay_booking_view(request, pk):
+    """
+    Demo payment endpoint (no real khalti/esewa)
+    Body:
+    {
+      "method": "khalti" | "esewa" | "demo",
+      "payer_id": "98xxxx",
+      "amount": 1100
+    }
+    """
+    try:
+        booking = Booking.objects.get(pk=pk, user=request.user)
+    except Booking.DoesNotExist:
+        return Response({"message": "Booking not found"}, status=404)
+
+    method = request.data.get("method", "demo")
+    payer_id = request.data.get("payer_id", "")
+    amount = request.data.get("amount", None)
+
+    if not payer_id:
+        return Response({"message": "payer_id is required"}, status=400)
+
+    # (optional) validate amount equals booking.price
+    if amount is None:
+        amount = float(booking.price)
+
+    # Mark booking as paid
+    booking.payment_status = "paid"
+    booking.payment_method = method
+    booking.payment_reference = f"{method.upper()}-{timezone.now().timestamp()}"
+    booking.paid_at = timezone.now()
+
+    # optionally confirm booking after payment
+    booking.status = "confirmed"
+
+    booking.save()
+
+    return Response({
+        "message": "Payment successful (demo)",
+        "booking_id": booking.id,
+        "payment_status": booking.payment_status,
+        "payment_reference": booking.payment_reference
+    }, status=200)
+
+

@@ -12,6 +12,18 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.username} ({self.role})"
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile")
+    avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+
+    # optional fields
+    full_name = models.CharField(max_length=150, blank=True)
+    phone = models.CharField(max_length=30, blank=True)
+    address = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return f"Profile of {self.user.username}"
+
 class PanditProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,

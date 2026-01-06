@@ -1,7 +1,7 @@
 # account/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import PanditProfile
+from .models import PanditProfile,UserProfile
 
 User = get_user_model()
 
@@ -54,3 +54,17 @@ class PanditProfileSerializer(serializers.ModelSerializer):
 
     def get_specializations_list(self, obj):
         return obj.specialties_list()
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserProfile
+        fields = ("full_name", "phone", "address", "avatar", "avatar_url")
+
+    def get_avatar_url(self, obj):
+        request = self.context.get("request")
+        if obj.avatar and hasattr(obj.avatar, "url"):
+            url = obj.avatar.url  # like /media/avatars/xxx.png
+            return request.build_absolute_uri(url) if request else url
+        return None

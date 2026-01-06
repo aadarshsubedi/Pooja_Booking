@@ -12,5 +12,7 @@ urlpatterns = [
     path("pandits/", views.pandit_list_view, name="pandit_list"),
     path("pandits/me/", views.my_pandit_profile_view, name="my_pandit_profile"),
     path("pandits/<int:pk>/", views.pandit_detail_view, name="pandit_detail"),
+    path("profile/", views.my_profile_view, name="my_profile"),
+    path("profile/avatar/", views.upload_avatar_view, name="upload_avatar"),
     
 ]
