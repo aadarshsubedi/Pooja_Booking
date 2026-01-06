@@ -1,4 +1,4 @@
-// src/components/Signin.tsx
+// src/pages/Signin.tsx
 import React, {
   useState,
   type ChangeEvent,
@@ -19,6 +19,7 @@ const Signin: React.FC = () => {
     username: "",
     password: ""
   });
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -28,19 +29,48 @@ const Signin: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
     try {
+      // 🔥 HARD RESET OLD AUTH
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("role");
+
+      /**
+       * EXPECTED BACKEND RESPONSE:
+       * {
+       *   username: string,
+       *   role: "user" | "pandit"
+       * }
+       */
       const result = await login(formData.username, formData.password);
 
-      // ✅ SET LOGIN STATE
+      // ✅ AUTH FLAG
       localStorage.setItem("isLoggedIn", "true");
+
+      // ✅ STRICT ROLE NORMALIZATION (VERY IMPORTANT)
+      const backendRole = String(result?.role || "user")
+        .trim()
+        .toLowerCase();
+
+      const safeRole =
+        backendRole === "pandit" ? "pandit" : "user";
+
+      localStorage.setItem("role", safeRole);
+
+      // ✅ UPDATE NAVBAR WITHOUT REFRESH
       window.dispatchEvent(new Event("auth-change"));
 
       alert(
         result?.message ||
-          `Welcome, ${result?.username || formData.username}!`
+          `Welcome back, ${result?.username || formData.username}!`
       );
 
-      navigate("/pandits");
+      // ✅ ROLE-BASED REDIRECT (BULLETPROOF)
+      if (safeRole === "pandit") {
+        navigate("/pandit-dashboard");
+      } else {
+        navigate("/home");
+      }
     } catch (err: any) {
       alert(err?.message || "An error occurred during signin.");
     }
@@ -50,6 +80,7 @@ const Signin: React.FC = () => {
     <div className="signin-page">
       <main className="signin-container">
         <h2>Sign In</h2>
+
         <form onSubmit={handleSubmit} className="signin-form">
           <input
             type="text"
@@ -59,6 +90,7 @@ const Signin: React.FC = () => {
             placeholder="Username"
             required
           />
+
           <input
             type="password"
             name="password"
@@ -67,6 +99,7 @@ const Signin: React.FC = () => {
             placeholder="Password"
             required
           />
+
           <button type="submit" className="submit-btn">
             Sign In
           </button>

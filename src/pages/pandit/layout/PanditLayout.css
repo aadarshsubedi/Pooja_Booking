@@ -1,0 +1,10 @@
+.pandit-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6fb;
+}
+
+.pandit-content {
+  flex: 1;
+  padding: 24px;
+}

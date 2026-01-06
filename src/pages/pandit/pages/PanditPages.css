@@ -1,0 +1,89 @@
+/* DASHBOARD WRAPPER */
+.pandit-dashboard {
+  padding: 24px;
+ background: #fff4eb;
+}
+
+/* WARNING */
+.approval-banner {
+  background: #fff2d9;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  color: #7a4b00;
+  font-weight: 500;
+}
+
+/* STATS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* GRID */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.06);
+}
+
+/* BOOKING REQUESTS */
+.booking-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  padding: 14px 0;
+}
+
+.actions button {
+  margin-left: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.accept { background: #4caf50; color: white; }
+.reject { background: #f44336; color: white; }
+.message { background: #6b5bd6; color: white; }
+.call { background: #2e7d32; color: white; }
+
+/* SCHEDULE */
+.schedule-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.status.confirmed { color: green; }
+.status.available { color: gray; }
+
+/* CALENDAR */
+.calendar-box {
+  height: 180px;
+  background: #f1effc;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.block-date {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(to right, #f4a045, #f6b35b);
+  color: white;
+  border: none;
+}

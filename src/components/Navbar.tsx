@@ -6,15 +6,15 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // 🔒 sync login state ONLY (not role routing)
   const syncLoginState = () => {
     setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
   };
 
   useEffect(() => {
-    // initial check
     syncLoginState();
 
-    // ✅ listen to SAME-TAB auth updates
+    // listen to auth updates (signin/signup/logout)
     window.addEventListener("auth-change", syncLoginState);
 
     return () => {
@@ -22,12 +22,25 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
+  // ✅ FIXED: role decided at click time (NO stale React state)
+  const handleProfileClick = () => {
+    const role = localStorage.getItem("role")?.toLowerCase();
+
+    if (role === "pandit") {
+      navigate("/pandit-dashboard");
+    } else {
+      navigate("/userprofile");
+    }
+  };
+
   return (
     <nav className="navbar">
+      {/* LOGO */}
       <div className="logo" onClick={() => navigate("/home")}>
         <img src="/images/logo.png" alt="Pooja Booking" />
       </div>
 
+      {/* NAV LINKS */}
       <ul className="nav-links">
         <li>
           <Link to="/home">
@@ -51,6 +64,7 @@ const Navbar: React.FC = () => {
         </li>
       </ul>
 
+      {/* RIGHT SIDE */}
       <div className="nav-buttons">
         {!isLoggedIn ? (
           <>
@@ -62,11 +76,7 @@ const Navbar: React.FC = () => {
             </button>
           </>
         ) : (
-          <button
-            className="profile-avatar"
-            onClick={() => navigate("/userprofile")}
-          >
-            {/* ✅ also fix path (public folder) */}
+          <button className="profile-avatar" onClick={handleProfileClick}>
             <img src="/images/profile.jpg" alt="Profile" />
           </button>
         )}

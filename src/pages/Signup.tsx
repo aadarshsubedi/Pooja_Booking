@@ -60,9 +60,7 @@ const Signup: React.FC = () => {
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-  };
+  const closeModal = () => setShowModal(false);
 
   const handleUserChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -74,11 +72,16 @@ const Signup: React.FC = () => {
     setPanditData({ ...panditData, [e.target.name]: e.target.value });
   };
 
+  /* ---------------- SUBMIT (FIXED) ---------------- */
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      /* -------- USER SIGNUP -------- */
+      // 🔥 CLEAR PREVIOUS SESSION (CRITICAL)
+      localStorage.clear();
+
+      /* ================= USER SIGNUP ================= */
       if (role === "user") {
         await signup(
           userData.username,
@@ -87,7 +90,6 @@ const Signup: React.FC = () => {
           "user"
         );
 
-        // ✅ save profile for UserProfile page
         localStorage.setItem(
           "userProfile",
           JSON.stringify({
@@ -101,16 +103,16 @@ const Signup: React.FC = () => {
           })
         );
 
-        // ✅ login state + notify navbar
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("role", "user");
+
         window.dispatchEvent(new Event("auth-change"));
 
-        alert("Signup successful! Welcome 🎉");
         navigate("/home");
       }
 
-      /* -------- PANDIT SIGNUP -------- */
-      if (role === "pandit") {
+      /* ================= PANDIT SIGNUP ================= */
+      else if (role === "pandit") {
         await signup(
           panditData.username,
           panditData.email,
@@ -118,15 +120,16 @@ const Signup: React.FC = () => {
           "pandit"
         );
 
-        // ✅ login state + notify navbar
         localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("role", "pandit");
+
+        // 🔑 verification gate
+        localStorage.setItem("panditVerified", "false");
+
         window.dispatchEvent(new Event("auth-change"));
 
-        alert("Pandit signup successful!");
-        navigate("/pandit-setup");
+        navigate("/pandit-verification");
       }
-
-      closeModal();
     } catch (err: any) {
       alert(err?.message || "Signup failed.");
     }
@@ -145,16 +148,11 @@ const Signup: React.FC = () => {
       <div className="signup-container-box">
         <h2>Sign Up</h2>
         <div className="signup-buttons">
-          <button
-            className="btn btn-user"
-            onClick={() => openModal("user")}
-          >
+          <button className="btn btn-user" onClick={() => openModal("user")}>
             Sign up as User
           </button>
-          <button
-            className="btn btn-pandit"
-            onClick={() => openModal("pandit")}
-          >
+
+          <button className="btn btn-pandit" onClick={() => openModal("pandit")}>
             Sign up as Pandit
           </button>
         </div>
@@ -180,12 +178,14 @@ const Signup: React.FC = () => {
                   <input name="username" placeholder="Username" onChange={handleUserChange} required />
                   <input type="email" name="email" placeholder="Email" onChange={handleUserChange} required />
                   <input name="phone" placeholder="Phone Number" onChange={handleUserChange} required />
+
                   <select name="gender" onChange={handleUserChange} required>
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                   </select>
+
                   <input type="date" name="dob" onChange={handleUserChange} required />
                   <input name="address" placeholder="Address" onChange={handleUserChange} required />
                   <input type="password" name="password" placeholder="Password" onChange={handleUserChange} required />
