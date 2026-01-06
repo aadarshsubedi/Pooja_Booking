@@ -74,6 +74,11 @@ const Signin: React.FC = () => {
     } catch (err: any) {
       alert(err?.message || "An error occurred during signin.");
     }
+
+    console.log("After login tokens:", {
+      access: localStorage.getItem("accessToken"),
+      refresh: localStorage.getItem("refreshToken"),
+    });
   };
 
   return (

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./PaymentPage.css";
+import { payBooking } from "../api/Api";
 
 interface LocationState {
   pooja?: string;
   amount?: number;
+  bookingId?: number;
 }
 
 const PaymentPage: React.FC = () => {
@@ -12,22 +14,34 @@ const PaymentPage: React.FC = () => {
   const location = useLocation();
   const state = location.state as LocationState;
 
-  const [amount, setAmount] = useState<number>(state?.amount || 1100);
+  const [amount] = useState<number>(state?.amount || 1100);
   const [paymentId, setPaymentId] = useState("");
 
-  const handlePayNow = () => {
-    if (!paymentId) {
-      alert("Please enter your eSewa/Khalti ID");
-      return;
-    }
+const handlePayNow = async () => {
+  if (!paymentId) {
+    alert("Please enter your eSewa/Khalti ID");
+    return;
+  }
 
-    console.log("Payment Amount:", amount);
-    console.log("Payment ID:", paymentId);
+  if (!state?.bookingId) {
+    alert("Booking ID missing. Please book again.");
+    navigate("/pandits");
+    return;
+  }
 
-    // Add payment API integration here if needed
-    alert(`Payment of Rs. ${amount} initiated for ${state?.pooja || "your pooja"}!`);
+  try {
+    const result = await payBooking(state.bookingId, {
+      method: "demo", // or "khalti" / "esewa"
+      payer_id: paymentId,
+      amount: amount,
+    });
+
+    alert(`✅ ${result.message}`);
     navigate("/home");
-  };
+  } catch (err: any) {
+    alert(err?.message || "Payment failed");
+  }
+};
 
   return (
     <div className="payment-wrapper">
