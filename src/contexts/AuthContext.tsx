@@ -1,10 +1,17 @@
 // src/contexts/AuthContext.tsx
 import React, { createContext, useState, useEffect, type ReactNode } from "react";
-import { getCurrentUser, signinUser, signupUser, logoutUser } from "../api/Api";
+import {
+  getCurrentUser,
+  signinUser,
+  signupUser,
+  logoutUser,
+  getMyProfile, // ✅ add this in Api.ts (GET /api/profile/)
+} from "../api/Api";
 
 interface User {
   username: string;
   role: string;
+  avatarUrl?: string; // ✅ added
 }
 
 interface AuthContextType {
@@ -25,16 +32,33 @@ export const AuthContext = createContext<AuthContextType>({
   checkAuth: async () => {},
 });
 
-export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const checkAuth = async () => {
+    const access = localStorage.getItem("accessToken");
+    if (!access) {
+      setUser(null);
+      setIsAuthenticated(false);
+      return;
+    }
+
     try {
-      const data = await getCurrentUser();
-      setUser({username: data.username, role: data.role});
+      const data = await getCurrentUser(); // { username, role }
+      let avatarUrl = "";
+
+      // ✅ load avatar (optional, don't fail login if profile fails)
+      try {
+        const profile = await getMyProfile(); // { avatar_url: "http://..." }
+        avatarUrl = profile.avatar_url || "";
+      } catch {
+        avatarUrl = "";
+      }
+
+      setUser({ username: data.username, role: data.role, avatarUrl });
       setIsAuthenticated(true);
-    } catch (_) {
+    } catch {
       setUser(null);
       setIsAuthenticated(false);
     }
@@ -45,27 +69,29 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({children}) => {
   }, []);
 
   const signup = async (username: string, email: string, password: string, role: string) => {
-    const data = await signupUser({username, email, password, role});
-    // signupUser stores tokens and sets localStorage user info
+    const data = await signupUser({ username, email, password, role });
     await checkAuth();
     return data;
   };
 
   const login = async (username: string, password: string) => {
-    const data = await signinUser({username, password});
+    const data = await signinUser({ username, password });
     await checkAuth();
     return data;
   };
 
   const logout = async () => {
-    await logoutUser();
+    // ✅ IMPORTANT: update UI immediately
     setUser(null);
     setIsAuthenticated(false);
+    await logoutUser(); // clears tokens
   };
 
   return (
-    <AuthContext.Provider value={{user, isAuthenticated, login, signup, logout, checkAuth}}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, checkAuth }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export default AuthProvider;

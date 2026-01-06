@@ -102,8 +102,8 @@ const Signup: React.FC = () => {
         );
 
         // ✅ login state + notify navbar
-        localStorage.setItem("isLoggedIn", "true");
-        window.dispatchEvent(new Event("auth-change"));
+        // localStorage.setItem("isLoggedIn", "true");
+        // window.dispatchEvent(new Event("auth-change"));
 
         alert("Signup successful! Welcome 🎉");
         navigate("/home");

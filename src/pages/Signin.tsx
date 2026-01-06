@@ -31,9 +31,9 @@ const Signin: React.FC = () => {
     try {
       const result = await login(formData.username, formData.password);
 
-      // ✅ SET LOGIN STATE
-      localStorage.setItem("isLoggedIn", "true");
-      window.dispatchEvent(new Event("auth-change"));
+      // // ✅ SET LOGIN STATE
+      // localStorage.setItem("isLoggedIn", "true");
+      // window.dispatchEvent(new Event("auth-change"));
 
       alert(
         result?.message ||
@@ -44,6 +44,10 @@ const Signin: React.FC = () => {
     } catch (err: any) {
       alert(err?.message || "An error occurred during signin.");
     }
+    console.log("After login tokens:", {
+      access: localStorage.getItem("accessToken"),
+      refresh: localStorage.getItem("refreshToken"),
+  });
   };
 
   return (

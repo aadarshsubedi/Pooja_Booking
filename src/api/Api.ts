@@ -102,23 +102,35 @@ async function tryRefreshToken(): Promise<boolean> {
 
 // wrapper that adds Authorization header and auto-refreshes on 401
 export async function authFetch(path: string, opts: RequestInit = {}) {
-  let access = getAccessToken();
-  const headers: any = opts.headers ? { ...(opts.headers as any) } : {};
-  headers["Content-Type"] = headers["Content-Type"] || "application/json";
-  if (access) headers["Authorization"] = `Bearer ${access}`;
+  const access = localStorage.getItem("accessToken");
+
+  const headers = new Headers(opts.headers || {});
+  if (access) {
+    headers.set("Authorization", `Bearer ${access}`);
+  }
+
+  // ✅ Only set JSON content-type if body is NOT FormData
+  const isFormData =
+    typeof FormData !== "undefined" && opts.body instanceof FormData;
+
+  if (!isFormData && opts.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
 
   const res = await fetch(`${BASE_URL}${path}`, { ...opts, headers });
+
+  // ✅ auto refresh if 401
   if (res.status === 401) {
     const refreshed = await tryRefreshToken();
     if (refreshed) {
-      access = getAccessToken();
-      headers["Authorization"] = `Bearer ${access}`;
+      const access2 = localStorage.getItem("accessToken");
+      if (access2) headers.set("Authorization", `Bearer ${access2}`);
       return fetch(`${BASE_URL}${path}`, { ...opts, headers });
     }
   }
+
   return res;
 }
-
 // Signup
 export async function signupUser(payload: SignupData) {
   const res = await fetch(`${BASE_URL}/signup/`, {
@@ -154,25 +166,71 @@ export async function signupUser(payload: SignupData) {
 }
 
 // Signin
+// export async function signinUser(credentials: SigninData) {
+//   const res = await fetch(`${BASE_URL}/signin/`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(credentials),
+//   });
+//   const data = await res.json();
+//   if (!res.ok) {
+//     throw new Error(data.message || "Signin failed");
+//   }
+//   if (data.access && data.refresh) {
+//     setTokens(data.access, data.refresh);
+//     localStorage.setItem("userRole", data.role || "");
+//     localStorage.setItem("username", data.username || "");
+//     setBasicUserProfileFromAuthResponse(data); 
+//   }
+//   return data;
+// }
 export async function signinUser(credentials: SigninData) {
   const res = await fetch(`${BASE_URL}/signin/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(credentials),
   });
-  const data = await res.json();
+
+  const data = await res.json().catch(() => ({}));
+  console.log("Signin response:", data);
+
   if (!res.ok) {
     throw new Error(data.message || "Signin failed");
   }
+
+  // ✅ MUST be present
   if (data.access && data.refresh) {
-    setTokens(data.access, data.refresh);
-    localStorage.setItem("userRole", data.role || "");
-    localStorage.setItem("username", data.username || "");
-    setBasicUserProfileFromAuthResponse(data); 
-  }
-  return data;
+  localStorage.setItem("accessToken", data.access);
+  localStorage.setItem("refreshToken", data.refresh);
 }
 
+  setTokens(data.access, data.refresh);
+  localStorage.setItem("userRole", data.role || "");
+  localStorage.setItem("username", data.username || "");
+
+  return data;
+}
+export async function getMyProfile() {
+  const res = await authFetch("/profile/", { method: "GET" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to load profile");
+  return data;
+}
+export async function uploadAvatar(file: File) {
+  const form = new FormData();
+  form.append("avatar", file);
+
+  // IMPORTANT: do NOT set Content-Type manually for FormData
+  const res = await authFetch("/profile/avatar/", {
+    method: "POST",
+    body: form,
+    headers: {}, // let browser set multipart boundary
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Avatar upload failed");
+  return data; // includes avatar_url
+}
 // Get current user (calls protected endpoint)
 export async function getCurrentUser() {
   const res = await authFetch("/current-user/", { method: "GET" });
@@ -278,4 +336,23 @@ export async function fetchPanditBookedSlots(
   );
   if (!res.ok) throw new Error("Failed to load pandit availability");
   return res.json();
+}
+
+//Payment
+export async function payBooking(bookingId: number, payload: {
+  method: string;
+  payer_id: string;
+  amount: number;
+}) {
+  const res = await authFetch(`/bookings/${bookingId}/pay/`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.message || "Payment failed");
+  }
+  return data;
 }
