@@ -154,22 +154,24 @@ def pandit_detail_view(request, pk):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(["POST", "PUT"])
+@api_view(["GET", "POST", "PUT"])
+@authentication_classes([JWTAuthentication])   # ✅ ADD THIS
 @permission_classes([IsAuthenticated])
 def my_pandit_profile_view(request):
-    """
-    Create or update current user's PanditProfile.
-    Only for users with role='Pandit'.
-    POST/PUT /api/pandits/me/
-    """
     user = request.user
-    if (user.role or "" ).lower()!= "pandit":   # adjust if your choice values differ
+
+    if (user.role or "").lower() != "pandit":
         return Response({"message": "Only pandits can create profiles."}, status=403)
 
-    profile, _ = PanditProfile.objects.get_or_create(user=user)
+    profile,_= PanditProfile.objects.get_or_create(user=user)
+
+    if request.method == "GET":
+        serializer = PanditProfileSerializer(profile)
+        return Response(serializer.data, status=200)
     serializer = PanditProfileSerializer(profile, data=request.data, partial=True)
     if serializer.is_valid():
-        # do not let user set is_approved from frontend
+        # ✅ never allow frontend to set approval
         serializer.save()
         return Response(serializer.data, status=200)
+
     return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)

@@ -42,7 +42,7 @@ class Booking(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=255)
     notes = models.TextField(blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    price = models.IntegerField(default=1100)
 
     status = models.CharField(
         max_length=20,
