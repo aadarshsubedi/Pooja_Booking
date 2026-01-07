@@ -10,6 +10,7 @@ import Home from "./pages/home";
 import Poojas from "./pages/Poojas";
 import Pandits from "./pages/Pandits";
 import AboutUs from "./pages/Aboutus";
+import ProfileRouter from "./pages/ProfileRouter";
 
 import BookingForm from "./pages/Bookingform";
 import PaymentPage from "./pages/Paymentpage";
@@ -45,39 +46,35 @@ import "./App.css";
 const AppContent: React.FC = () => {
   const location = useLocation();
 
-  // 🔒 Hide USER navbar/footer for ALL pandit routes
-  const isPanditRoute = location.pathname.startsWith("/pandit");
+  const isPanditRoute =
+    location.pathname === "/pandit" || location.pathname.startsWith("/pandit/");
 
   return (
     <>
       <ScrollToTop />
 
-      {/* USER NAVBAR */}
       {!isPanditRoute && <Navbar />}
 
       <main>
         <Routes>
-          {/* ================= DEFAULT ================= */}
           <Route path="/" element={<Navigate to="/home" replace />} />
 
-          {/* ================= USER ================= */}
+          {/* USER */}
           <Route path="/home" element={<Home />} />
           <Route path="/poojas" element={<Poojas />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/pandits" element={<Pandits />} />
-
           <Route path="/booking" element={<BookingForm />} />
           <Route path="/payment" element={<PaymentPage />} />
-
+          <Route path="/profile" element={<ProfileRouter />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-
           <Route path="/userprofile" element={<Userprofile />} />
           <Route path="/edit-profile" element={<Editprofile />} />
           <Route path="/change-password" element={<Changepassword />} />
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/my-location" element={<Mylocation />} />
-          <Route path="pandit-verification" element={<PanditVerification />} />
+          <Route path="/pandit-verification" element={<PanditVerification />} />
 
           <Route path="/call" element={<CallPage />} />
           <Route
@@ -85,9 +82,15 @@ const AppContent: React.FC = () => {
             element={<MessageInterface onBack={() => window.history.back()} />}
           />
 
-          {/* ================= PANDIT (ISOLATED APP) ================= */}
+          {/* COMPAT: old route */}
+          <Route
+            path="/pandit-dashboard"
+            element={<Navigate to="/pandit/dashboard" replace />}
+          />
+
+          {/* PANDIT */}
           <Route path="/pandit" element={<PanditLayout />}>
-            
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="schedule" element={<Schedule />} />
@@ -95,12 +98,10 @@ const AppContent: React.FC = () => {
             <Route path="profile" element={<Profile />} />
           </Route>
 
-          {/* ================= FALLBACK ================= */}
           <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
       </main>
 
-      {/* USER FOOTER */}
       {!isPanditRoute && <Footer />}
     </>
   );

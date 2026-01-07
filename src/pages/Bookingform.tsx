@@ -89,20 +89,19 @@ const BookingForm: React.FC = () => {
     }
 
     const backendTime = mapSlotToTime(selectedTime);
-
      try {
+    const staticPrice = 1100;
     const booking = await createBooking({
-      pandit: panditId,
-      pooja: null, // 👈 tell backend that pooja relation is empty
-      date,
-      time: backendTime,
-      location,
-      notes: `Pooja type: ${poojaType}, Slot: ${selectedTime}, Pandit: ${
-        storedPanditName || ""
-      }`,
-      // price: priceFromStorage, // add if needed
-    });
-
+       pandit: panditId,
+       pooja: null,
+       date,
+       time: backendTime,
+       location,
+       notes: `Pooja type: ${poojaType}, Slot: ${selectedTime}, Pandit: ${
+       storedPanditName || ""
+       }`,
+       price: staticPrice, // ✅ send price to backend
+     });
       console.log("Booking created:", booking);
 
       navigate("/payment", {
@@ -112,7 +111,7 @@ const BookingForm: React.FC = () => {
           date,
           selectedTime,
           location,
-          price: booking.price,
+          price: staticPrice,
         },
       });
     } catch (err: any) {

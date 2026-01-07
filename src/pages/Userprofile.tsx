@@ -78,10 +78,11 @@ const UserProfile: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await logout(); // ✅ clears tokens + auth state
-    localStorage.removeItem("userProfile"); // optional (fine to remove)
-    navigate("/home");
-  };
+  await logout();
+  localStorage.removeItem("userProfile");
+  window.dispatchEvent(new Event("auth-change")); // ✅ add this
+  navigate("/home");
+};
 
   if (!user) return <p className="profile-empty">No profile data found.</p>;
 

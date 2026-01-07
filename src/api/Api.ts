@@ -165,25 +165,6 @@ export async function signupUser(payload: SignupData) {
   return data;
 }
 
-// Signin
-// export async function signinUser(credentials: SigninData) {
-//   const res = await fetch(`${BASE_URL}/signin/`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(credentials),
-//   });
-//   const data = await res.json();
-//   if (!res.ok) {
-//     throw new Error(data.message || "Signin failed");
-//   }
-//   if (data.access && data.refresh) {
-//     setTokens(data.access, data.refresh);
-//     localStorage.setItem("userRole", data.role || "");
-//     localStorage.setItem("username", data.username || "");
-//     setBasicUserProfileFromAuthResponse(data); 
-//   }
-//   return data;
-// }
 export async function signinUser(credentials: SigninData) {
   const res = await fetch(`${BASE_URL}/signin/`, {
     method: "POST",
@@ -198,18 +179,27 @@ export async function signinUser(credentials: SigninData) {
     throw new Error(data.message || "Signin failed");
   }
 
-  // ✅ MUST be present
-  if (data.access && data.refresh) {
-  localStorage.setItem("accessToken", data.access);
-  localStorage.setItem("refreshToken", data.refresh);
-}
+  if (!data.access || !data.refresh) {
+    throw new Error("Signin failed: token missing from backend response");
+  }
 
+  // ✅ store tokens + login state
   setTokens(data.access, data.refresh);
+
+  // ✅ store user info
   localStorage.setItem("userRole", data.role || "");
   localStorage.setItem("username", data.username || "");
+  localStorage.setItem("userEmail", data.email || "");
+
+  // ✅ create basic profile cache (optional)
+  setBasicUserProfileFromAuthResponse(data);
+
+  // ✅ notify UI
+  window.dispatchEvent(new Event("auth-change"));
 
   return data;
 }
+
 export async function getMyProfile() {
   const res = await authFetch("/profile/", { method: "GET" });
   const data = await res.json().catch(() => ({}));
@@ -309,7 +299,12 @@ export async function fetchPanditDetail(id: number): Promise<PanditProfile> {
   if (!res.ok) throw new Error("Failed to load pandit");
   return res.json();
 }
-
+export async function getMyPanditProfile() {
+  const res = await authFetch("/pandits/me/", { method: "GET" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to load pandit profile");
+  return data; // includes is_approved
+}
 // create/update current pandit's profile (protected)
 export async function saveMyPanditProfile(
   payload: Partial<PanditProfile>

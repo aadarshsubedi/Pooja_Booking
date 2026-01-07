@@ -1,17 +1,10 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useState, useEffect, type ReactNode } from "react";
-import {
-  getCurrentUser,
-  signinUser,
-  signupUser,
-  logoutUser,
-  getMyProfile, // ✅ add this in Api.ts (GET /api/profile/)
-} from "../api/Api";
+import React, { createContext, useEffect, useState, type ReactNode } from "react";
+import { getCurrentUser, signinUser, signupUser, logoutUser } from "../api/Api";
 
 interface User {
   username: string;
   role: string;
-  avatarUrl?: string; // ✅ added
 }
 
 interface AuthContextType {
@@ -45,20 +38,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     try {
-      const data = await getCurrentUser(); // { username, role }
-      let avatarUrl = "";
-
-      // ✅ load avatar (optional, don't fail login if profile fails)
-      try {
-        const profile = await getMyProfile(); // { avatar_url: "http://..." }
-        avatarUrl = profile.avatar_url || "";
-      } catch {
-        avatarUrl = "";
-      }
-
-      setUser({ username: data.username, role: data.role, avatarUrl });
+      const data = await getCurrentUser();
+      setUser({ username: data.username, role: data.role });
       setIsAuthenticated(true);
     } catch {
+      // ✅ important: prevent "ghost login"
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("username");
+      localStorage.removeItem("userEmail");
+
       setUser(null);
       setIsAuthenticated(false);
     }
@@ -66,26 +57,44 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     checkAuth();
+
+    const onAuthChange = () => {
+      checkAuth();
+    };
+
+    window.addEventListener("auth-change", onAuthChange);
+    return () => window.removeEventListener("auth-change", onAuthChange);
   }, []);
 
   const signup = async (username: string, email: string, password: string, role: string) => {
     const data = await signupUser({ username, email, password, role });
-    await checkAuth();
+    window.dispatchEvent(new Event("auth-change"));
     return data;
   };
 
   const login = async (username: string, password: string) => {
     const data = await signinUser({ username, password });
-    await checkAuth();
+    window.dispatchEvent(new Event("auth-change"));
     return data;
   };
 
   const logout = async () => {
-    // ✅ IMPORTANT: update UI immediately
+  try {
+    await logoutUser();
+  } finally {
+    // ✅ force UI to update immediately
     setUser(null);
     setIsAuthenticated(false);
-    await logoutUser(); // clears tokens
-  };
+
+    // cleanup extra frontend-only things
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("username");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+
+    window.dispatchEvent(new Event("auth-change"));
+  }
+};
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, checkAuth }}>
@@ -93,5 +102,3 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </AuthContext.Provider>
   );
 };
-
-export default AuthProvider;

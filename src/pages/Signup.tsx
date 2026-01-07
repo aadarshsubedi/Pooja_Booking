@@ -121,7 +121,7 @@ const Signup: React.FC = () => {
         );
 
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("role", "pandit");
+        localStorage.setItem("userRole", "pandit");
 
         // 🔑 verification gate
         localStorage.setItem("panditVerified", "false");

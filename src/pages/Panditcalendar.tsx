@@ -10,18 +10,34 @@ type Props = {
   onAvailableSlotsChange: (slots: string[]) => void;
 };
 
-const ALL_SLOTS = ["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"];
+const ALL_SLOTS = ["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"] as const;
 
 const slotToTime = (slot: string) => {
   switch (slot) {
-    case "Morning 6-8 AM": return "06:00:00";
-    case "Afternoon 1-3 PM": return "13:00:00";
-    case "Evening 5-7 PM": return "17:00:00";
-    default: return "00:00:00";
+    case "Morning 6-8 AM":
+      return "06:00:00";
+    case "Afternoon 1-3 PM":
+      return "13:00:00";
+    case "Evening 5-7 PM":
+      return "17:00:00";
+    default:
+      return "00:00:00";
   }
 };
 
-const toISO = (d: Date) => d.toISOString().slice(0, 10);
+// ✅ LOCAL SAFE: Date -> "YYYY-MM-DD" (NO UTC SHIFT)
+const toYMDLocal = (d: Date) => {
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+// ✅ LOCAL SAFE: "YYYY-MM-DD" -> Date (NO UTC SHIFT)
+const fromYMDLocal = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+};
 
 const BookingCalendar: React.FC<Props> = ({
   panditId,
@@ -38,7 +54,8 @@ const BookingCalendar: React.FC<Props> = ({
     const start = new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1);
     const end = new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0);
 
-    fetchPanditBookedSlots(panditId, toISO(start), toISO(end))
+    // ✅ use LOCAL formatted start/end
+    fetchPanditBookedSlots(panditId, toYMDLocal(start), toYMDLocal(end))
       .then(setBookedMap)
       .catch(console.error);
   }, [panditId, activeMonth]);
@@ -50,27 +67,34 @@ const BookingCalendar: React.FC<Props> = ({
 
   useEffect(() => {
     if (date) onAvailableSlotsChange(computeFreeSlots(date));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, bookedMap]);
 
-  const tileDisabled = ({ date, view }: { date: Date; view: string }) => {
+  const tileDisabled = ({ date: tileDate, view }: { date: Date; view: string }) => {
     if (view !== "month") return false;
 
-    // ✅ disable past dates
+    // ✅ disable past dates (LOCAL)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const d = new Date(date);
+
+    const d = new Date(tileDate);
     d.setHours(0, 0, 0, 0);
+
     if (d < today) return true;
 
-    // ✅ disable fully booked days
-    const iso = toISO(date);
+    // ✅ disable fully booked days (LOCAL iso key)
+    const iso = toYMDLocal(tileDate);
     return computeFreeSlots(iso).length === 0;
   };
 
   return (
     <Calendar
-      value={date ? new Date(date) : undefined}
-      onChange={(val) => onDateChange(toISO(val as Date))}
+      value={date ? fromYMDLocal(date) : undefined} // ✅ FIXED
+      onChange={(val) => {
+        const picked = Array.isArray(val) ? val[0] : val;
+        if (!picked) return;
+        onDateChange(toYMDLocal(picked)); // ✅ FIXED
+      }}
       onActiveStartDateChange={({ activeStartDate }) =>
         setActiveMonth(activeStartDate || new Date())
       }
