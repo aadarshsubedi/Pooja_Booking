@@ -1,10 +1,31 @@
-.pandit-layout {
+.pandit-shell {
   display: flex;
-  min-height: 100vh;
-  background: #f4f6fb;
+  height: 100vh;
+  overflow: hidden; /* whole page will not scroll */
 }
 
+/* Sidebar should remain full height */
+.pandit-sidebar {
+  width: 240px;
+  height: 100vh;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+}
+
+/* Right side */
+.pandit-main {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* prevents push-down scroll */
+}
+
+/* Content should scroll, not the full page */
 .pandit-content {
   flex: 1;
-  padding: 24px;
+  overflow-y: auto;
+  padding: 16px;
+  box-sizing: border-box;
 }

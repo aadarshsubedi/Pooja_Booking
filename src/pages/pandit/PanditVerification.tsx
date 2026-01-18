@@ -366,7 +366,7 @@ const PanditVerification: React.FC = () => {
 
           {/* PROFESSIONAL */}
           <div className="verify-section">
-            <h3>Professional Details</h3>
+            <h3>Professional Details and Experience</h3>
             <div className="verify-grid">
               <input
                 className="verify-input"

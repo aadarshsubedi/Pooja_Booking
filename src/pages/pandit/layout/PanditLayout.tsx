@@ -1,15 +1,35 @@
+// import { Outlet } from "react-router-dom";
+// import Sidebar from "../components/Sidebar";
+// import "./PanditLayout.css";
+
+// const PanditLayout = () => {
+//   return (
+//     <div className="pandit-shell">
+//       <Sidebar />
+//       <div className="pandit-content">
+//         <Outlet />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default PanditLayout;
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import PanditTopbar from "../components/Topbar";
 import "./PanditLayout.css";
 
 const PanditLayout = () => {
   return (
-    <div className="pandit-layout">
+    <div className="pandit-shell">
       <Sidebar />
-      <div className="pandit-content">
-        <Topbar />
-        <Outlet />
+
+      <div className="pandit-main">
+        <PanditTopbar />
+
+        <div className="pandit-content">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

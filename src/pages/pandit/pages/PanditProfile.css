@@ -1,0 +1,106 @@
+.pandit-profile-page {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.pandit-profile-card {
+  width: 100%;
+  max-width: 850px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.pandit-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.status-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-pill.approved { background: #e7f8ee; color: #167a3a; }
+.status-pill.pending { background: #fff3cd; color: #8a6d1b; }
+
+.pandit-preview {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.pandit-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.pandit-preview-text h3 { margin: 0; }
+.pandit-preview-text p { margin: 4px 0; font-size: 14px; }
+
+.pandit-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.field input, .field textarea {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  outline: none;
+}
+
+.hint {
+  font-size: 12px;
+  color: #777;
+}
+
+.save-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #111;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pandit-profile-loading {
+  padding: 20px;
+}

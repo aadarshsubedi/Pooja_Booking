@@ -9,8 +9,8 @@ type Service = {
   description: string;
   duration: string;
   bookings: string;
-  rating: number;
-  reviews: number;
+  // rating: number;
+  // reviews: number;
 };
 
 const services: Service[] = [
@@ -21,9 +21,9 @@ const services: Service[] = [
     description:
       "Sacred ceremony for entering a new home, bringing peace and prosperity to your family.",
     duration: "2-3 hours",
-    bookings: "245+ bookings",
-    rating: 4.8,
-    reviews: 245,
+    bookings: "",
+    // rating: 4.8,
+    // reviews: 245,
   },
   {
     id: 2,
@@ -32,9 +32,9 @@ const services: Service[] = [
     description:
       "Complete Hindu wedding rituals performed by experienced pandits with authentic traditions.",
     duration: "4-6 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 3,
@@ -43,9 +43,9 @@ const services: Service[] = [
     description:
       "Shraddha Pooja is a deeply significant ritual in Nepali and Hindu tradition, performed to honor ancestors.",
     duration: "1-3 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 4,
@@ -54,9 +54,9 @@ const services: Service[] = [
     description:
       "Ritual to invoke divine energy at the start of Navratri, symbolizing the goddess residing in the household.",
     duration: "1–2 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 5,
@@ -65,9 +65,9 @@ const services: Service[] = [
     description:
       "Auspicious ritual for devotees of Lord Vishnu, performed during festivals or special occasions.",
     duration: "1.5–2 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 6,
@@ -76,9 +76,9 @@ const services: Service[] = [
     description:
       "First rice feeding ceremony for infants, performed with prayers and blessings.",
     duration: "1–1.5 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 7,
@@ -87,9 +87,9 @@ const services: Service[] = [
     description:
       "Sacred thread ceremony initiating boys into Vedic studies with rituals and blessings.",
     duration: "2–3 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 8,
@@ -98,9 +98,9 @@ const services: Service[] = [
     description:
       "Festival where men renew their sacred thread, performed with prayers and blessings.",
     duration: "1–2 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 9,
@@ -109,9 +109,9 @@ const services: Service[] = [
     description:
       "Festival honoring the seven sages, observed with prayers, fasting, and purification.",
     duration: "4–6 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 10,
@@ -120,9 +120,9 @@ const services: Service[] = [
     description:
       "Performed to appease planetary deities (Navagrahas) and reduce negative effects.",
     duration: "2–3 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 11,
@@ -131,9 +131,9 @@ const services: Service[] = [
     description:
       "Powerful Vedic ritual popular among Brahmin and Chhetri communities.",
     duration: "3–6 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
   {
     id: 12,
@@ -142,9 +142,9 @@ const services: Service[] = [
     description:
       "Important ritual for Hindu households, especially Brahmin and Chhetri communities.",
     duration: "2–3 hours",
-    bookings: "156+ bookings",
-    rating: 4.9,
-    reviews: 156,
+    bookings: "",
+    // rating: 4.9,
+    // reviews: 156,
   },
 ];
 
@@ -178,9 +178,9 @@ const ServiceCard: React.FC<{ service: Service }> = ({ service }) => {
 
       <div className="service-rating">
         {"★".repeat(5)}{" "}
-        <span>
+        {/* <span>
           {service.rating} ({service.reviews} reviews)
-        </span>
+        </span> */}
       </div>
 
       <div className="service-footer">

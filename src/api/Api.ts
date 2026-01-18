@@ -36,6 +36,33 @@ export interface PanditProfile {
   image_url: string;
   is_approved: boolean;
 }
+export type PanditDashboardSummary = {
+  pandit_username: string;
+  pending: number;
+  confirmed: number;
+  completed: number;
+  cancelled: number;
+  upcoming: number;
+  earnings: number;
+};
+
+export type PanditBooking = {
+  id: number;
+  user: number;
+  user_username: string;
+  user_email: string;
+  pooja: number | null;
+  pooja_name?: string;
+  date: string;
+  time: string;
+  location: string;
+  notes: string;
+  price: number;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  payment_status: "paid" | "unpaid" | "failed";
+  payment_method?: string | null;
+  payment_reference?: string | null;
+};
 
 export type BookedMap = Record<string, string[]>;
 
@@ -99,6 +126,7 @@ async function tryRefreshToken(): Promise<boolean> {
     return false;
   }
 }
+
 
 // wrapper that adds Authorization header and auto-refreshes on 401
 export async function authFetch(path: string, opts: RequestInit = {}) {
@@ -349,5 +377,40 @@ export async function payBooking(bookingId: number, payload: {
   if (!res.ok) {
     throw new Error(data.message || "Payment failed");
   }
+  return data;
+}
+
+// Dashboard
+export async function fetchPanditSummary(): Promise<PanditDashboardSummary> {
+  const res = await authFetch("/pandit/dashboard/summary/", { method: "GET" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to load summary");
+  return data;
+}
+
+export async function fetchPanditBookings(status?: string): Promise<PanditBooking[]> {
+  const url = status
+    ? `/pandit/dashboard/bookings/?status=${encodeURIComponent(status)}`
+    : "/pandit/dashboard/bookings/";
+  const res = await authFetch(url, { method: "GET" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to load bookings");
+  return data;
+}
+
+export async function updatePanditBookingStatus(bookingId: number, status: string) {
+  const res = await authFetch(`/pandit/dashboard/bookings/${bookingId}/status/`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to update status");
+  return data;
+}
+
+export async function fetchPanditEarnings() {
+  const res = await authFetch("/pandit/dashboard/earnings/", { method: "GET" });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to load earnings");
   return data;
 }

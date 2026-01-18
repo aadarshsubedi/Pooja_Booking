@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-
+import RequirePandit from "./pages/pandit/RequirePandit";
 /* ================= USER LAYOUT ================= */
 import Navbar from "./components/Navbar";
 import Footer from "./components/footer";
@@ -29,12 +29,12 @@ import MessageInterface from "./pages/messageinterface";
 
 /* ================= PANDIT ================= */
 import PanditLayout from "./pages/pandit/layout/PanditLayout";
-
+import Profile from "./pages/pandit/pages/Profile";
 import Dashboard from "./pages/pandit/pages/Dashboard";
 import Bookings from "./pages/pandit/pages/Bookings";
 import Schedule from "./pages/pandit/pages/Schedule";
 import Earnings from "./pages/pandit/pages/Earnings";
-import Profile from "./pages/pandit/pages/Profile";
+// import Profile from "./pages/pandit/pages/Profile";
 import PanditVerification from "./pages/pandit/PanditVerification";
 
 /* ================= UTILS ================= */
@@ -95,10 +95,24 @@ const AppContent: React.FC = () => {
             <Route path="bookings" element={<Bookings />} />
             <Route path="schedule" element={<Schedule />} />
             <Route path="earnings" element={<Earnings />} />
-            <Route path="profile" element={<Profile />} />
+            {/* <Route path="profile" element={<Profile />} /> */}
           </Route>
 
           <Route path="*" element={<Navigate to="/home" replace />} />
+          <Route
+              path="/pandit"
+              element={
+                <RequirePandit>
+                  <PanditLayout />
+                </RequirePandit>
+              }
+            >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="bookings" element={<Bookings />} />
+          <Route path="schedule" element={<Schedule />} />
+          <Route path="earnings" element={<Earnings />} />
+          <Route path="profile" element={<Profile />} />
+          </Route>
         </Routes>
       </main>
 
