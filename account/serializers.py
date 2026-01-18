@@ -68,3 +68,5 @@ class UserProfileSerializer(serializers.ModelSerializer):
             url = obj.avatar.url  # like /media/avatars/xxx.png
             return request.build_absolute_uri(url) if request else url
         return None
+    
+    

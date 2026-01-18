@@ -8,6 +8,7 @@ from .models import Booking
 from .serializers import BookingSerializer
 from django.utils import timezone
 
+
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -72,7 +73,6 @@ def pandit_booked_slots_view(request, pandit_id):
         result.setdefault(d, []).append(t)
 
     return Response(result, status=200)
-
 
 
 @api_view(["POST"])

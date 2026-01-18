@@ -51,3 +51,23 @@ class BookingSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"time": "This time slot is already booked for this pandit."})
 
         return attrs
+    
+class PanditBookingSerializer(serializers.ModelSerializer):
+    user_username = serializers.CharField(source="user.username", read_only=True)
+    user_email = serializers.CharField(source="user.email", read_only=True)
+    pandit_username = serializers.CharField(source="pandit.username", read_only=True)
+    pooja_name = serializers.CharField(source="pooja.name", read_only=True)
+
+    class Meta:
+        model = Booking
+        fields = (
+            "id",
+            "user", "user_username", "user_email",
+            "pandit", "pandit_username",
+            "pooja", "pooja_name",
+            "date", "time", "location", "notes",
+            "price", "status",
+            "payment_status", "payment_method", "payment_reference", "paid_at",
+            "created_at",
+        )
+        read_only_fields = ("user", "pandit", "created_at", "paid_at")
