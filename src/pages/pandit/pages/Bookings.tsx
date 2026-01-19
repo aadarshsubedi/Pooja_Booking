@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { fetchPanditBookings, updatePanditBookingStatus, type PanditBooking } from "../../../api/Api";
+import {
+  fetchPanditBookings,
+  updatePanditBookingStatus,
+  type PanditBooking
+} from "../../../api/Api";
+import "./PanditPages.css";
 
 const Bookings: React.FC = () => {
   const [status, setStatus] = useState("");
@@ -26,8 +31,8 @@ const Bookings: React.FC = () => {
   };
 
   return (
-    <div>
-      <h3>Bookings</h3>
+    <div className="bookings-page">
+      <h3>Pooja Bookings</h3>
 
       <select value={status} onChange={(e) => setStatus(e.target.value)}>
         <option value="">All</option>
@@ -37,9 +42,9 @@ const Bookings: React.FC = () => {
         <option value="cancelled">Cancelled</option>
       </select>
 
-      {err && <p>{err}</p>}
+      {err && <p className="bookings-error">{err}</p>}
 
-      <table style={{ width: "100%", marginTop: 10 }}>
+      <table className="bookings-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -63,12 +68,42 @@ const Bookings: React.FC = () => {
               <td>{b.time}</td>
               <td>{b.location}</td>
               <td>Rs. {b.price}</td>
-              <td>{b.status}</td>
-              <td>{b.payment_status}</td>
+
               <td>
-                <button onClick={() => changeStatus(b.id, "confirmed")}>Confirm</button>{" "}
-                <button onClick={() => changeStatus(b.id, "completed")}>Complete</button>{" "}
-                <button onClick={() => changeStatus(b.id, "cancelled")}>Cancel</button>
+                <span className={`status-badge status-${b.status}`}>
+                  {b.status}
+                </span>
+              </td>
+
+              <td
+                className={
+                  b.payment_status === "paid"
+                    ? "payment-paid"
+                    : "payment-unpaid"
+                }
+              >
+                {b.payment_status}
+              </td>
+
+              <td className="action-buttons">
+                <button
+                  className="btn-confirm"
+                  onClick={() => changeStatus(b.id, "confirmed")}
+                >
+                  Confirm
+                </button>
+                <button
+                  className="btn-complete"
+                  onClick={() => changeStatus(b.id, "completed")}
+                >
+                  Complete
+                </button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => changeStatus(b.id, "cancelled")}
+                >
+                  Cancel
+                </button>
               </td>
             </tr>
           ))}

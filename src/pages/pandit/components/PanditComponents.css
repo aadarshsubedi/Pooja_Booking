@@ -1,67 +1,99 @@
+/* ONLINE STATUS */
 .online-dot {
-  color: #7cff7c;
+  color: #4caf50;
+  font-size: 14px;
 }
 
+/* SIDEBAR */
 .pandit-sidebar {
-  width: 200px;
-  background: #fff;
-  padding: 20px;
+  width: 220px;
+  background: linear-gradient(180deg, #fffaf5, #ffeede);
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   height: 100vh;
-  overflow-y: auto
+  overflow-y: auto;
+  border-right: 1px solid #eee;
 }
-.pandit-logout-btn{
-  margin-top: auto;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
+
+/* SIDEBAR LINKS */
 .pandit-sidebar a {
   text-decoration: none;
   color: #444;
   font-weight: 500;
+  padding: 10px 12px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
 }
 
-.stat-card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+.pandit-sidebar a:hover {
+  background: #ffe3c8;
+  color: #000;
+  transform: translateX(3px);
 }
+
+/* LOGOUT BUTTON */
+.pandit-logout-btn {
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(90deg, #ff8c42, #ff5e00);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.pandit-logout-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+/* STAT CARD */
+.stat-card {
+  background: linear-gradient(to bottom, #ffffff, #fff3e6);
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+}
+
+/* TOP BAR */
 .pandit-topbar {
-  height: 60px;
+  height: 65px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  padding: 0 16px;
+  padding: 0 18px;
   border-bottom: 1px solid #e5e5e5;
-  background: #fff;
-
+  background: #ffad6a;
   position: sticky;
   top: 0;
   z-index: 50;
 }
 
-.pandit-topbar-left {
-  cursor: pointer;
-}
-
+/* BRAND */
 .pandit-brand {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 17px;
+  color: #222;
 }
 
+/* TOPBAR RIGHT */
 .pandit-topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
+/* AVATAR BUTTON */
 .pandit-avatar-btn {
   display: flex;
   align-items: center;
@@ -69,38 +101,30 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 10px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  transition: background 0.25s ease;
 }
 
 .pandit-avatar-btn:hover {
   background: #f5f5f5;
 }
 
+/* AVATAR IMAGE */
 .pandit-avatar {
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #ddd;
+  border: 1px solid #ff8c42;
 }
 
+
+
+
+/* NAME */
 .pandit-name {
   font-size: 14px;
   font-weight: 600;
+  color: #333;
 }
-
-.pandit-logout-btn {
-  background: #111;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.pandit-logout-btn:hover {
-  opacity: 0.9;
-}
-
