@@ -8,8 +8,6 @@ import "./Signup.css";
 import { AuthContext } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-/* ---------------- TYPES ---------------- */
-
 interface UserFormData {
   fullName: string;
   username: string;
@@ -26,8 +24,6 @@ interface PanditFormData {
   email: string;
   password: string;
 }
-
-/* ---------------- COMPONENT ---------------- */
 
 const Signup: React.FC = () => {
   const { signup } = useContext(AuthContext);
@@ -53,8 +49,6 @@ const Signup: React.FC = () => {
     password: ""
   });
 
-  /* ---------------- HANDLERS ---------------- */
-
   const openModal = (r: "user" | "pandit") => {
     setRole(r);
     setShowModal(true);
@@ -72,17 +66,28 @@ const Signup: React.FC = () => {
     setPanditData({ ...panditData, [e.target.name]: e.target.value });
   };
 
-  /* ---------------- SUBMIT (FIXED) ---------------- */
+  const isValidPhone = (phone: string) => /^9\d{9}$/.test(phone);
+
+  const isValidPassword = (password: string) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      // 🔥 CLEAR PREVIOUS SESSION (CRITICAL)
-      localStorage.clear();
-
-      /* ================= USER SIGNUP ================= */
       if (role === "user") {
+        if (!isValidPhone(userData.phone)) {
+          alert("Phone number must start with 9 and be exactly 10 digits.");
+          return;
+        }
+
+        if (!isValidPassword(userData.password)) {
+          alert(
+            "Password must contain uppercase, lowercase, number & special character."
+          );
+          return;
+        }
+
         await signup(
           userData.username,
           userData.email,
@@ -90,29 +95,19 @@ const Signup: React.FC = () => {
           "user"
         );
 
-        localStorage.setItem(
-          "userProfile",
-          JSON.stringify({
-            fullName: userData.fullName,
-            username: userData.username,
-            email: userData.email,
-            phone: userData.phone,
-            gender: userData.gender,
-            dob: userData.dob,
-            address: userData.address
-          })
-        );
-
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("role", "user");
 
         window.dispatchEvent(new Event("auth-change"));
-
         navigate("/home");
       }
 
-      /* ================= PANDIT SIGNUP ================= */
-      else if (role === "pandit") {
+      if (role === "pandit") {
+        if (!isValidPassword(panditData.password)) {
+          alert("Password must be strong.");
+          return;
+        }
+
         await signup(
           panditData.username,
           panditData.email,
@@ -121,28 +116,23 @@ const Signup: React.FC = () => {
         );
 
         localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("userRole", "pandit");
-
-        // 🔑 verification gate
+        localStorage.setItem("role", "pandit");
         localStorage.setItem("panditVerified", "false");
 
         window.dispatchEvent(new Event("auth-change"));
-
         navigate("/pandit-verification");
       }
+
+      closeModal();
     } catch (err: any) {
       alert(err?.message || "Signup failed.");
     }
   };
 
-  /* ---------------- JSX ---------------- */
-
   return (
     <div className="signup-page">
       <div className="signup-top">
-        <p className="tagline">
-          Join our community and book poojas with ease!
-        </p>
+        <p className="tagline">Join our community and book poojas with ease!</p>
       </div>
 
       <div className="signup-container-box">
@@ -151,7 +141,6 @@ const Signup: React.FC = () => {
           <button className="btn btn-user" onClick={() => openModal("user")}>
             Sign up as User
           </button>
-
           <button className="btn btn-pandit" onClick={() => openModal("pandit")}>
             Sign up as Pandit
           </button>
@@ -165,38 +154,77 @@ const Signup: React.FC = () => {
               &times;
             </span>
 
-            <h3>
-              {role === "user"
-                ? "User Registration"
-                : "Pandit Registration"}
-            </h3>
+            <h3>{role === "user" ? "User Registration" : "Pandit Registration"}</h3>
 
             <form onSubmit={handleSubmit} className="signup-form">
               {role === "user" && (
                 <>
-                  <input name="fullName" placeholder="Full Name" onChange={handleUserChange} required />
-                  <input name="username" placeholder="Username" onChange={handleUserChange} required />
-                  <input type="email" name="email" placeholder="Email" onChange={handleUserChange} required />
-                  <input name="phone" placeholder="Phone Number" onChange={handleUserChange} required />
+                  <div className="form-row">
+                    <div>
+                      <label>Full Name</label>
+                      <input name="fullName" onChange={handleUserChange} required />
+                    </div>
+                    <div>
+                      <label>Username</label>
+                      <input name="username" onChange={handleUserChange} required />
+                    </div>
+                  </div>
 
-                  <select name="gender" onChange={handleUserChange} required>
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  <div className="form-row">
+                    <div>
+                      <label>Email</label>
+                      <input type="email" name="email" onChange={handleUserChange} required />
+                    </div>
+                    <div>
+                      <label>Phone Number</label>
+                      <input name="phone" onChange={handleUserChange} required />
+                    </div>
+                  </div>
 
-                  <input type="date" name="dob" onChange={handleUserChange} required />
-                  <input name="address" placeholder="Address" onChange={handleUserChange} required />
-                  <input type="password" name="password" placeholder="Password" onChange={handleUserChange} required />
+                  <div className="form-row">
+                    <div>
+                      <label>Gender</label>
+                      <select name="gender" onChange={handleUserChange} required>
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label>Date of Birth</label>
+                      <input type="date" name="dob" onChange={handleUserChange} required />
+                    </div>
+                  </div>
+
+                  <label>Address</label>
+                  <input name="address" onChange={handleUserChange} required />
+
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    onChange={handleUserChange}
+                    required
+                  />
                 </>
               )}
 
               {role === "pandit" && (
                 <>
-                  <input name="username" placeholder="Username" onChange={handlePanditChange} required />
-                  <input type="email" name="email" placeholder="Email" onChange={handlePanditChange} required />
-                  <input type="password" name="password" placeholder="Password" onChange={handlePanditChange} required />
+                  <label>Username</label>
+                  <input name="username" onChange={handlePanditChange} required />
+
+                  <label>Email</label>
+                  <input type="email" name="email" onChange={handlePanditChange} required />
+
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    name="password"
+                    onChange={handlePanditChange}
+                    required
+                  />
                 </>
               )}
 
