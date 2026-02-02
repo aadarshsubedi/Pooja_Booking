@@ -20,7 +20,8 @@ class UserProfile(models.Model):
     full_name = models.CharField(max_length=150, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     address = models.CharField(max_length=255, blank=True)
-
+    dob = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, blank=True)
     def __str__(self):
         return f"Profile of {self.user.username}"
 

@@ -1,0 +1,537 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1a30;
+      --text:#eaf1ff;
+      --muted:#9fb0cc;
+      --line:rgba(152, 162, 164, 0.27);
+      --soft:rgba(255,255,255,.06);
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(1100px 500px at 15% -10%, rgba(96,165,250,.16), transparent 60%),
+        radial-gradient(900px 450px at 110% 10%, rgba(167,139,250,.12), transparent 60%),
+        var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px 18px 56px}
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    .title h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .title p{margin:6px 0 0;color:var(--muted);font-size:13px}
+    .actions{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:13px;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+    }
+    .btn:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16)}
+    .btn:active{transform:scale(.98)}
+    .muted{color:var(--muted)}
+
+    .grid-4{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:14px;
+      margin: 14px 0 18px;
+    }
+    @media (max-width: 1050px){ .grid-4{grid-template-columns: repeat(2, 1fr);} }
+    @media (max-width: 520px){ .grid-4{grid-template-columns: 1fr;} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      padding:14px 14px 12px;
+      overflow:hidden;
+    }
+    .metric-top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      margin-bottom:10px;
+    }
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--soft);
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .metric-value{
+      font-size:26px;
+      font-weight:800;
+      letter-spacing:.2px;
+      margin:0;
+    }
+    .metric-label{margin:0;color:var(--muted);font-size:13px}
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px){ .grid-2{grid-template-columns:1fr;} }
+
+    .grid-2b{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 980px){ .grid-2b{grid-template-columns:1fr;} }
+
+    .card-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .card-head h2{
+      margin:0;
+      font-size:16px;
+      letter-spacing:.2px;
+    }
+    .card-head small{color:var(--muted)}
+
+    /* IMPORTANT: chart needs height */
+    .chart-box{
+      height: 320px;
+      background: rgba(0,0,0,.15);
+      border: 1px dashed rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    canvas{
+      width:100% !important;
+      height:100% !important;
+    }
+
+    /* Table */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:13px;
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{color:var(--muted);font-weight:600}
+    tr:hover td{background:rgba(255,255,255,.03)}
+    .badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      font-size:12px;
+    }
+
+    .footer-note{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align:center;
+    }
+    /* ===== LIGHT THEME OVERRIDE (colors only) ===== */
+:root{
+  --bg: #f6f8fc;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  --shadow: 0 8px 20px rgba(17,24,39,0.08);
+
+  --primary: #2563eb;
+  --success: #16a34a;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+/* page background + base text */
+body{
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* cards / sections */
+.card, .box, .panel, .widget{
+  background: var(--card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* headings + small text */
+h1,h2,h3,h4,h5,h6{ color: var(--text) !important; }
+small,.muted,.subtext,p{ color: var(--muted) !important; }
+
+/* table */
+table{
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+thead th{
+  background: #f3f4f6 !important;
+  color: var(--muted) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+tbody td{
+  border-bottom: 1px solid var(--border) !important;
+}
+tbody tr:hover{
+  background: #f9fafb !important;
+}
+
+/* chart container if you have any */
+.chart-box, .chart-container{
+  background: #ffffff !important;
+  border: 1px dashed #dbeafe !important;
+}
+
+/* buttons (only colors, shape unchanged) */
+button, .btn{
+  background: #ffffff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+button:hover, .btn:hover{
+  background: #f9fafb !important;
+}
+
+/* badges/pills (if you already have them) */
+.badge-primary{ background: rgba(37,99,235,0.12) !important; color: var(--primary) !important; }
+.badge-success{ background: rgba(22,163,74,0.12) !important; color: var(--success) !important; }
+.badge-warning{ background: rgba(245,158,11,0.14) !important; color: #b45309 !important; }
+.badge-danger{  background: rgba(239,68,68,0.12) !important; color: var(--danger) !important; }
+
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <div class="topbar">
+      <div class="title">
+        <h1>📊 Admin Analytics Dashboard</h1>
+        <p class="muted">
+          Overview of bookings, payments, and platform activity.
+        </p>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="/admin/">⬅ Back to Admin</a>
+        <a class="btn" href="/admin/Booking/booking/">📦 Bookings</a>
+        <a class="btn" href="/admin/account/customuser/">👤 Users</a>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="grid-4">
+      <div class="card">
+        <div class="metric-top">
+          <span class="pill">Total Bookings</span>
+          <span class="pill">All time</span>
+        </div>
+        <p class="metric-value">{{ total_bookings|default:0 }}</p>
+        <p class="metric-label">All bookings created in the system</p>
+      </div>
+
+      <div class="card">
+        <div class="metric-top">
+          <span class="pill">Total Users</span>
+          <span class="pill">All time</span>
+        </div>
+        <p class="metric-value">{{ total_users|default:0 }}</p>
+        <p class="metric-label">Registered users (including pandits)</p>
+      </div>
+
+      <div class="card">
+        <div class="metric-top">
+          <span class="pill">Approved Pandits</span>
+          <span class="pill">Live</span>
+        </div>
+        <p class="metric-value">{{ approved_pandits|default:0 }}</p>
+        <p class="metric-label">Pandits currently approved & visible</p>
+      </div>
+
+      <div class="card">
+        <div class="metric-top">
+          <span class="pill">Paid Bookings</span>
+          <span class="pill">All time</span>
+        </div>
+        <p class="metric-value">{{ paid_bookings|default:0 }}</p>
+        <p class="metric-label">Bookings marked as paid</p>
+      </div>
+    </div>
+
+    <!-- BOOKINGS TREND + STATUS -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>📈 Bookings Trend (Last 30 Days)</h2>
+            <small class="muted">Daily volume overview</small>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>🧾 Booking Status</h2>
+            <small class="muted">Pending / Confirmed / Cancelled / Completed</small>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT METHOD + PAYMENT STATUS -->
+    <div class="grid-2b">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>💳 Payment Methods</h2>
+            <small class="muted">Khalti / eSewa / Others</small>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="methodChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>✅ Payment Status Overview</h2>
+            <small class="muted">Paid / Unpaid / Failed</small>
+          </div>
+        </div>
+        <div class="chart-box">
+          <canvas id="paymentStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECENT BOOKINGS TABLE -->
+    <div class="card" style="margin-top:14px;">
+      <div class="card-head">
+        <div>
+          <h2>🗂 Recent Bookings</h2>
+          <small class="muted">Latest bookings for quick review</small>
+        </div>
+      </div>
+
+      <div style="overflow:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Pandit</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Method</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in recent_bookings %}
+              <tr>
+                <td>#{{ b.id }}</td>
+                <td>{{ b.user.username }}</td>
+                <td>{{ b.pandit.username }}</td>
+                <td>{{ b.date }}</td>
+                <td>{{ b.time }}</td>
+                <td><span class="badge">{{ b.status }}</span></td>
+                <td><span class="badge">{{ b.payment_status }}</span></td>
+                <td>{{ b.payment_method|default:"—" }}</td>
+                <td>Rs. {{ b.price|default:0 }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="9" class="muted">No bookings found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Tip: If charts render but show no data, open DevTools → Console and check if the JSON variables are empty.
+    </div>
+
+    <!-- ✅ SAFE JSON (MUST EXIST IN CONTEXT) -->
+    {{ daily_labels|json_script:"daily_labels_json" }}
+    {{ daily_counts|json_script:"daily_counts_json" }}
+    {{ status_counts|json_script:"status_counts_json" }}
+    {{ method_counts|json_script:"method_counts_json" }}
+    {{ payment_status_counts|json_script:"payment_status_counts_json" }}
+
+    <!-- CHARTS -->
+    <script>
+      // ✅ Parse JSON safely
+      const dailyLabels = JSON.parse(document.getElementById("daily_labels_json").textContent || "[]");
+      const dailyCounts = JSON.parse(document.getElementById("daily_counts_json").textContent || "[]");
+
+      const statusCountsObj = JSON.parse(document.getElementById("status_counts_json").textContent || "{}");
+      const methodCountsObj = JSON.parse(document.getElementById("method_counts_json").textContent || "{}");
+      const paymentStatusCountsObj = JSON.parse(document.getElementById("payment_status_counts_json").textContent || "{}");
+
+      // Convert dict -> arrays
+      const statusLabels = Object.keys(statusCountsObj);
+      const statusCounts = Object.values(statusCountsObj);
+
+      const methodLabels = Object.keys(methodCountsObj);
+      const methodCounts = Object.values(methodCountsObj);
+
+      const payStatusLabels = Object.keys(paymentStatusCountsObj);
+      const payStatusCounts = Object.values(paymentStatusCountsObj);
+
+      // (Optional debug)
+      console.log("Dashboard chart data:", {
+        dailyLabels, dailyCounts, statusCountsObj, methodCountsObj, paymentStatusCountsObj
+      });
+
+      // Trend chart
+      const trendEl = document.getElementById("trendChart");
+      if (trendEl) {
+        new Chart(trendEl, {
+          type: "line",
+          data: {
+            labels: dailyLabels,
+            datasets: [{
+              label: "Bookings",
+              data: dailyCounts,
+              tension: 0.3,
+              fill: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+
+      // Status chart
+      const statusEl = document.getElementById("statusChart");
+      if (statusEl) {
+        new Chart(statusEl, {
+          type: "doughnut",
+          data: {
+            labels: statusLabels,
+            datasets: [{
+              label: "Status",
+              data: statusCounts
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: "bottom" } }
+          }
+        });
+      }
+
+      // Payment methods chart
+      const methodEl = document.getElementById("methodChart");
+      if (methodEl) {
+        new Chart(methodEl, {
+          type: "bar",
+          data: {
+            labels: methodLabels,
+            datasets: [{
+              label: "Payments",
+              data: methodCounts
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true } },
+            scales: { y: { beginAtZero: true } }
+          }
+        });
+      }
+
+      // Payment status chart
+      const payStatusEl = document.getElementById("paymentStatusChart");
+      if (payStatusEl) {
+        new Chart(payStatusEl, {
+          type: "pie",
+          data: {
+            labels: payStatusLabels,
+            datasets: [{
+              label: "Payment Status",
+              data: payStatusCounts
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: "bottom" } }
+          }
+        });
+      }
+    </script>
+
+  </div>
+</body>
+</html>

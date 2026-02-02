@@ -33,7 +33,6 @@ class BookingSerializer(serializers.ModelSerializer):
         booking_date = attrs.get("date")
         booking_time = attrs.get("time")
         pandit = attrs.get("pandit")
-
         # 1) block past dates
         today = timezone.now().date()
         if booking_date and booking_date < today:

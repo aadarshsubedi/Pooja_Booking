@@ -14,30 +14,66 @@ from .serializers import UserProfileSerializer
 from rest_framework.parsers import MultiPartParser, FormParser
 from .models import UserProfile
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def signup_view(request):
     """
-    POST: { username, email, password, role }
-    Returns access + refresh tokens and user info.
+    POST: { username, email, password, role, full_name, phone, address, dob, gender }
+    Creates CustomUser + UserProfile (profile fields stored in UserProfile only)
     """
-    print("RAW signup request.data:",request.data)
     serializer = SignupSerializer(data=request.data)
+
     if not serializer.is_valid():
-        print("Signup serializer errors:", serializer.errors)
-        return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=400)
+        return Response(
+            {"message": "Invalid data", "errors": serializer.errors},
+            status=400,
+        )
 
     user = serializer.save()
-    # create tokens
+
+    # ✅ Create/update profile with extra fields
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+
+    profile_payload = {
+        "full_name": request.data.get("full_name", ""),
+        "phone": request.data.get("phone", ""),
+        "address": request.data.get("address", ""),
+        "dob": request.data.get("dob", None),
+        "gender": request.data.get("gender", ""),
+    }
+
+    pser = UserProfileSerializer(
+        profile,
+        data=profile_payload,
+        partial=True,
+        context={"request": request},
+    )
+
+    if pser.is_valid():
+        pser.save()
+    else:
+        # Not blocking signup; but you will see what failed
+        return Response(
+            {"message": "Profile data invalid", "errors": pser.errors},
+            status=400,
+        )
+
     refresh = RefreshToken.for_user(user)
-    return Response({
-        'message': 'Signup successful',
-        'username': user.username,
-        'email': user.email,
-        'role': user.role,
-        'access': str(refresh.access_token),
-        'refresh': str(refresh),
-    }, status=201)
+
+    return Response(
+        {
+            "message": "Signup successful",
+            "username": user.username,
+            "email": user.email,
+            "role": user.role,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+
+            # ✅ Return profile so frontend can store it immediately
+            "profile": pser.data,
+        },
+        status=201,
+    )
 @api_view(["POST"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -58,14 +94,34 @@ def upload_avatar_view(request):
 
     return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)
 
-@api_view(["GET"])
+# @api_view(["GET"])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+# def my_profile_view(request):
+#     profile, _ = UserProfile.objects.get_or_create(user=request.user)
+#     serializer = UserProfileSerializer(profile, context={"request": request})
+#     return Response(serializer.data, status=200)
+@api_view(["GET", "PUT", "PATCH"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def my_profile_view(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
-    serializer = UserProfileSerializer(profile, context={"request": request})
-    return Response(serializer.data, status=200)
 
+    if request.method == "GET":
+        serializer = UserProfileSerializer(profile, context={"request": request})
+        return Response(serializer.data)
+
+    serializer = UserProfileSerializer(
+        profile,
+        data=request.data,
+        partial=True,
+        context={"request": request},
+    )
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response({"message": "Invalid data", "errors": serializer.errors}, status=400)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signin_view(request):
