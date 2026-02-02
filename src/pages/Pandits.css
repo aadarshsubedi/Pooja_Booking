@@ -1,4 +1,4 @@
-/* 🌸 General Section Styling */
+/* 🌸 Section */
 .pandits-section {
   padding: 60px 20px;
   text-align: center;
@@ -19,7 +19,7 @@
   margin-bottom: 40px;
 }
 
-/* 🌸 Pandit Grid Layout */
+/* 🌸 Grid */
 .pandits-grid {
   display: flex;
   flex-wrap: wrap;
@@ -27,7 +27,7 @@
   justify-content: center;
 }
 
-/* 🌸 Pandit Card */
+/* 🌸 Card */
 .pandit-card {
   background: linear-gradient(to bottom, #fff9f5, #ffeede);
   border-radius: 14px;
@@ -36,6 +36,8 @@
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-align: left;
+  display: flex;
+  flex-direction: column;
 }
 
 .pandit-card:hover {
@@ -43,12 +45,35 @@
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
-.pandit-image {
+/* 🧱 FIXED IMAGE SPACE */
+.pandit-image-wrapper {
   width: 100%;
   height: 200px;
-  object-fit: cover;
   border-radius: 12px;
+  background: #f1e6dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 15px;
+  overflow: hidden;
+}
+
+/* 🖼 Image */
+.pandit-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Placeholder behavior */
+.pandit-image[src*="pandit-default"] {
+  object-fit: contain;
+  padding: 30px;
+}
+
+/* 🌸 Details */
+.pandit-details {
+  flex: 1;
 }
 
 .pandit-name {
@@ -64,7 +89,7 @@
   margin-bottom: 8px;
 }
 
-/* 🌸 Rating */
+/* ⭐ Rating */
 .pandit-rating {
   color: #ff9800;
   font-size: 14px;
@@ -91,11 +116,6 @@
   font-size: 13px;
   font-weight: 500;
   color: black;
-  transition: background 0.3s;
-}
-
-.specialty-box:hover {
-  background: #ffe8d5;
 }
 
 .specialty-icon {
@@ -103,12 +123,11 @@
   color: #ff7300;
 }
 
-/* 🌸 Footer Buttons */
+/* 🌸 Footer */
 .pandit-footer {
-  margin-top: 18px;
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .call-btn,
@@ -119,42 +138,11 @@
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-weight: 600;
   font-size: 14px;
 }
 
 .call-btn:hover,
 .book-btn:hover {
-  background: linear-gradient(90deg, #ff5e00, #ff8c42);
   transform: scale(1.05);
-}
-
-/* 🌸 Browse All Pandits Section */
-.browse-pandits-section {
-  margin-top: 50px;
-  text-align: center;
-}
-
-.browse-text {
-  font-size: 16px;
-  color: black;
-  margin-bottom: 18px;
-}
-
-.browse-btn {
-  background: linear-gradient(90deg, #ff7a18, #ff5403);
-  color: white;
-  border: none;
-  padding: 14px 32px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 15px;
-  transition: all 0.3s ease;
-}
-
-.browse-btn:hover {
-  background: linear-gradient(90deg, #ff5403, #ff7a18);
-  transform: translateY(-2px);
 }
