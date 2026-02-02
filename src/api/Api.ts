@@ -5,6 +5,11 @@ export interface SignupData {
   email: string;
   password: string;
   role: string;
+  full_name?: string;
+  phone?: string;
+  address?: string;
+  dob?: string;
+  gender?: string;
 }
 
 export interface SigninData {
@@ -166,30 +171,39 @@ export async function signupUser(payload: SignupData) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+
   const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Signup failed");
 
-  if (!res.ok) {
-    console.error("Signup failed:", data);
-    let msg = data.message || "Signup failed";
-    if (data.errors) {
-      const firstField = Object.keys(data.errors)[0];
-      if (
-        firstField &&
-        Array.isArray(data.errors[firstField]) &&
-        data.errors[firstField][0]
-      ) {
-        msg = data.errors[firstField][0];
-      }
-    }
-    throw new Error(msg);
-  }
-
+  // tokens
   if (data.access && data.refresh) {
-    setTokens(data.access, data.refresh);
+    localStorage.setItem("accessToken", data.access);
+    localStorage.setItem("refreshToken", data.refresh);
+    localStorage.setItem("isLoggedIn", "true");
+
     localStorage.setItem("userRole", data.role || "");
     localStorage.setItem("username", data.username || "");
-    setBasicUserProfileFromAuthResponse(data); 
+    localStorage.setItem("userEmail", data.email || "");
   }
+
+  // ✅ persist profile returned by backend
+  if (data.profile) {
+    const p = data.profile;
+    localStorage.setItem(
+      "userProfile",
+      JSON.stringify({
+        fullName: p.full_name || data.username,
+        username: data.username,
+        email: data.email || "",
+        phone: p.phone || "",
+        address: p.address || "",
+        dob: p.dob || "",
+        gender: p.gender || "",
+        avatar: p.avatar_url || "",
+      })
+    );
+  }
+
   return data;
 }
 
@@ -234,6 +248,23 @@ export async function getMyProfile() {
   if (!res.ok) throw new Error(data.message || "Failed to load profile");
   return data;
 }
+export async function updateMyProfile(payload: {
+  full_name?: string;
+  phone?: string;
+  address?: string;
+  dob?: string;
+  gender?: string;
+}) {
+  const res = await authFetch("/profile/", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to update profile");
+  return data; // contains updated profile + avatar_url
+}
+
 export async function uploadAvatar(file: File) {
   const form = new FormData();
   form.append("avatar", file);
@@ -362,23 +393,25 @@ export async function fetchPanditBookedSlots(
 }
 
 //Payment
-export async function payBooking(bookingId: number, payload: {
-  method: string;
-  payer_id: string;
-  amount: number;
-}) {
+export async function payBooking(
+  bookingId: number,
+  payload: {
+    method: "khalti" | "esewa";
+    amount: number;
+    payer_id?: string;
+  }
+) {
   const res = await authFetch(`/bookings/${bookingId}/pay/`, {
     method: "POST",
     body: JSON.stringify(payload),
   });
 
   const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data.message || "Payment failed");
-  }
+  if (!res.ok) throw new Error(data.message || "Payment failed");
   return data;
 }
+
+
 
 // Dashboard
 export async function fetchPanditSummary(): Promise<PanditDashboardSummary> {

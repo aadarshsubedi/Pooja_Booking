@@ -70,6 +70,11 @@ const Signup: React.FC = () => {
 
   const isValidPassword = (password: string) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(password);
+  const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  return email.length >= 6 && email.length <= 254 && emailRegex.test(email);
+};
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -87,17 +92,26 @@ const Signup: React.FC = () => {
           );
           return;
         }
+        if(!isValidEmail(userData.email)){
+          alert("Invalid email");
+          return;
+        }
 
         await signup(
           userData.username,
           userData.email,
           userData.password,
-          "user"
+          "user",
+          {
+            full_name: userData.fullName,
+            phone: userData.phone,
+            address: userData.address,
+            dob: userData.dob,
+            gender: userData.gender,
+          }
         );
 
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("role", "user");
-
+        localStorage.setItem("userRole", "user");
         window.dispatchEvent(new Event("auth-change"));
         navigate("/home");
       }

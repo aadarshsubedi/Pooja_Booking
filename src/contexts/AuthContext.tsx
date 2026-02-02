@@ -11,7 +11,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (username: string, password: string) => Promise<any>;
-  signup: (username: string, email: string, password: string, role: string) => Promise<any>;
+  signup: (username: string, email: string, password: string, role: string, extra?: any) => Promise<any>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
@@ -66,11 +66,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => window.removeEventListener("auth-change", onAuthChange);
   }, []);
 
-  const signup = async (username: string, email: string, password: string, role: string) => {
-    const data = await signupUser({ username, email, password, role });
-    window.dispatchEvent(new Event("auth-change"));
-    return data;
-  };
+  const signup = async (username: string, email: string, password: string, role: string, extra: any = {}) => {
+  const data = await signupUser({ username, email, password, role, ...extra });
+  window.dispatchEvent(new Event("auth-change"));
+  return data;
+};
 
   const login = async (username: string, password: string) => {
     const data = await signinUser({ username, password });

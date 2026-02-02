@@ -14,6 +14,7 @@ import ProfileRouter from "./pages/ProfileRouter";
 
 import BookingForm from "./pages/Bookingform";
 import PaymentPage from "./pages/Paymentpage";
+import PaymentResult from "./pages/PaymentResult";
 
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
@@ -75,7 +76,7 @@ const AppContent: React.FC = () => {
           <Route path="/bookmarks" element={<Bookmarks />} />
           <Route path="/my-location" element={<Mylocation />} />
           <Route path="/pandit-verification" element={<PanditVerification />} />
-
+          <Route path="/payment-result" element={<PaymentResult />} />
           <Route path="/call" element={<CallPage />} />
           <Route
             path="/message"
