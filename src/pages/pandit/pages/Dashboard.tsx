@@ -21,8 +21,11 @@ const Dashboard: React.FC = () => {
         🙏 Welcome, {data.pandit_username}
       </h2>
 
+      {/* CARD GRID */}
       <div className="dashboard-cards">
-        <div className="card stat-card">
+
+        {/* ROW 1 */}
+        <div className="stat-card card">
           <div className="stat-icon">📅</div>
           <div>
             <p className="stat-label">Upcoming</p>
@@ -30,7 +33,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="card stat-card">
+        <div className="stat-card card">
           <div className="stat-icon">⏳</div>
           <div>
             <p className="stat-label">Pending</p>
@@ -38,7 +41,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="card stat-card">
+        {/* ROW 2 */}
+        <div className="stat-card card">
           <div className="stat-icon">✅</div>
           <div>
             <p className="stat-label">Confirmed</p>
@@ -46,7 +50,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="card stat-card">
+        <div className="stat-card card">
           <div className="stat-icon">✔️</div>
           <div>
             <p className="stat-label">Completed</p>
@@ -54,7 +58,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="card stat-card">
+        {/* ROW 3 */}
+        <div className="stat-card card">
           <div className="stat-icon">❌</div>
           <div>
             <p className="stat-label">Cancelled</p>
@@ -62,13 +67,14 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="card stat-card">
+        <div className="stat-card card earnings-card">
           <div className="stat-icon">💰</div>
           <div>
             <p className="stat-label">Total Earnings</p>
             <h2>Rs. {data.earnings}</h2>
           </div>
         </div>
+
       </div>
     </div>
   );
