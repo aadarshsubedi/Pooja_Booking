@@ -1,3 +1,4 @@
+
 // import React, { useEffect, useState } from "react";
 // import Calendar from "react-calendar";
 // import "./Panditcalendar.css";
@@ -10,8 +11,9 @@
 //   onAvailableSlotsChange: (slots: string[]) => void;
 // };
 
-// const ALL_SLOTS = ["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"] as const;
+// const ALL_SLOTS = ["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"];
 
+// // slot -> backend time
 // const slotToTime = (slot: string) => {
 //   switch (slot) {
 //     case "Morning 6-8 AM":
@@ -25,19 +27,27 @@
 //   }
 // };
 
-// // ✅ LOCAL SAFE: Date -> "YYYY-MM-DD" (NO UTC SHIFT)
-// const toYMDLocal = (d: Date) => {
-//   const yyyy = d.getFullYear();
-//   const mm = String(d.getMonth() + 1).padStart(2, "0");
-//   const dd = String(d.getDate()).padStart(2, "0");
-//   return `${yyyy}-${mm}-${dd}`;
+// // slot -> start hour (STRICT: disable slot after start hour passed)
+// const SLOT_START_HOUR: Record<string, number> = {
+//   "Morning 6-8 AM": 6,
+//   "Afternoon 1-3 PM": 13,
+//   "Evening 5-7 PM": 17,
 // };
 
-// // ✅ LOCAL SAFE: "YYYY-MM-DD" -> Date (NO UTC SHIFT)
-// const fromYMDLocal = (iso: string) => {
-//   const [y, m, d] = iso.split("-").map(Number);
-//   return new Date(y, m - 1, d);
+// // ✅ FIX timezone issue: DO NOT use toISOString()
+// // This prevents selecting 15 and getting 14
+// const toISO = (d: Date) => {
+//   const y = d.getFullYear();
+//   const m = String(d.getMonth() + 1).padStart(2, "0");
+//   const day = String(d.getDate()).padStart(2, "0");
+//   return `${y}-${m}-${day}`;
 // };
+
+// // helper: same local day
+// const isSameDay = (a: Date, b: Date) =>
+//   a.getFullYear() === b.getFullYear() &&
+//   a.getMonth() === b.getMonth() &&
+//   a.getDate() === b.getDate();
 
 // const BookingCalendar: React.FC<Props> = ({
 //   panditId,
@@ -48,53 +58,77 @@
 //   const [bookedMap, setBookedMap] = useState<BookedMap>({});
 //   const [activeMonth, setActiveMonth] = useState<Date>(new Date());
 
+//   // fetch booked slots for the month
 //   useEffect(() => {
 //     if (!panditId) return;
 
 //     const start = new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1);
 //     const end = new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0);
 
-//     // ✅ use LOCAL formatted start/end
-//     fetchPanditBookedSlots(panditId, toYMDLocal(start), toYMDLocal(end))
+//     fetchPanditBookedSlots(panditId, toISO(start), toISO(end))
 //       .then(setBookedMap)
 //       .catch(console.error);
 //   }, [panditId, activeMonth]);
 
+//   // ✅ compute free slots for a selected date
 //   const computeFreeSlots = (isoDate: string) => {
+//     // 1) remove booked slots
 //     const bookedTimes = bookedMap[isoDate] || [];
-//     return ALL_SLOTS.filter((s) => !bookedTimes.includes(slotToTime(s)));
+//     let free = ALL_SLOTS.filter((s) => !bookedTimes.includes(slotToTime(s)));
+
+//     // 2) if selected date is today -> remove slots whose START time has passed
+//     const selected = new Date(isoDate + "T00:00:00"); // safe local day
+//     const now = new Date();
+
+//     if (isSameDay(selected, now)) {
+//       const currentHour = now.getHours();
+//       const currentMinute = now.getMinutes();
+
+//       free = free.filter((slot) => {
+//         const startHour = SLOT_START_HOUR[slot] ?? 0;
+
+//         // STRICT rule:
+//         // if current time is AFTER start hour -> disable
+//         if (currentHour > startHour) return false;
+
+//         // if current time is EXACT start hour -> start has passed (even at minute 0)
+//         if (currentHour === startHour && currentMinute >= 0) return false;
+
+//         return true;
+//       });
+//     }
+
+//     return free;
 //   };
 
+//   // update available slots when date changes or bookedMap changes
 //   useEffect(() => {
 //     if (date) onAvailableSlotsChange(computeFreeSlots(date));
 //     // eslint-disable-next-line react-hooks/exhaustive-deps
 //   }, [date, bookedMap]);
 
-//   const tileDisabled = ({ date: tileDate, view }: { date: Date; view: string }) => {
+//   // disable tiles in calendar
+//   const tileDisabled = ({ date, view }: { date: Date; view: string }) => {
 //     if (view !== "month") return false;
 
-//     // ✅ disable past dates (LOCAL)
+//     // disable past dates
 //     const today = new Date();
 //     today.setHours(0, 0, 0, 0);
 
-//     const d = new Date(tileDate);
+//     const d = new Date(date);
 //     d.setHours(0, 0, 0, 0);
 
 //     if (d < today) return true;
 
-//     // ✅ disable fully booked days (LOCAL iso key)
-//     const iso = toYMDLocal(tileDate);
+//     // disable fully booked days (AND today if all slots already passed)
+//     const iso = toISO(date);
 //     return computeFreeSlots(iso).length === 0;
 //   };
 
 //   return (
 //     <Calendar
-//       value={date ? fromYMDLocal(date) : undefined} // ✅ FIXED
-//       onChange={(val) => {
-//         const picked = Array.isArray(val) ? val[0] : val;
-//         if (!picked) return;
-//         onDateChange(toYMDLocal(picked)); // ✅ FIXED
-//       }}
+//       value={date ? new Date(date + "T00:00:00") : undefined}
+//       onChange={(val) => onDateChange(toISO(val as Date))}
 //       onActiveStartDateChange={({ activeStartDate }) =>
 //         setActiveMonth(activeStartDate || new Date())
 //       }
@@ -104,10 +138,14 @@
 // };
 
 // export default BookingCalendar;
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "./Panditcalendar.css";
-import { fetchPanditBookedSlots, type BookedMap } from "../api/Api";
+import {
+  fetchPanditBookedSlots,
+  fetchPanditBlockedDatesPublic,
+  type BookedMap,
+} from "../api/Api";
 
 type Props = {
   panditId: number;
@@ -118,7 +156,6 @@ type Props = {
 
 const ALL_SLOTS = ["Morning 6-8 AM", "Afternoon 1-3 PM", "Evening 5-7 PM"];
 
-// slot -> backend time
 const slotToTime = (slot: string) => {
   switch (slot) {
     case "Morning 6-8 AM":
@@ -132,27 +169,13 @@ const slotToTime = (slot: string) => {
   }
 };
 
-// slot -> start hour (STRICT: disable slot after start hour passed)
-const SLOT_START_HOUR: Record<string, number> = {
-  "Morning 6-8 AM": 6,
-  "Afternoon 1-3 PM": 13,
-  "Evening 5-7 PM": 17,
-};
-
-// ✅ FIX timezone issue: DO NOT use toISOString()
-// This prevents selecting 15 and getting 14
+// ✅ timezone-safe date
 const toISO = (d: Date) => {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
 };
-
-// helper: same local day
-const isSameDay = (a: Date, b: Date) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
 
 const BookingCalendar: React.FC<Props> = ({
   panditId,
@@ -161,60 +184,49 @@ const BookingCalendar: React.FC<Props> = ({
   onAvailableSlotsChange,
 }) => {
   const [bookedMap, setBookedMap] = useState<BookedMap>({});
+  const [blockedDates, setBlockedDates] = useState<string[]>([]);
   const [activeMonth, setActiveMonth] = useState<Date>(new Date());
 
-  // fetch booked slots for the month
+  const monthStart = useMemo(
+    () => new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1),
+    [activeMonth]
+  );
+
+  const monthEnd = useMemo(
+    () => new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0),
+    [activeMonth]
+  );
+
   useEffect(() => {
     if (!panditId) return;
 
-    const start = new Date(activeMonth.getFullYear(), activeMonth.getMonth(), 1);
-    const end = new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 0);
+    const startISO = toISO(monthStart);
+    const endISO = toISO(monthEnd);
 
-    fetchPanditBookedSlots(panditId, toISO(start), toISO(end))
+    // booked slots
+    fetchPanditBookedSlots(panditId, startISO, endISO)
       .then(setBookedMap)
       .catch(console.error);
-  }, [panditId, activeMonth]);
 
-  // ✅ compute free slots for a selected date
+    // ✅ blocked dates (PUBLIC endpoint)
+    fetchPanditBlockedDatesPublic(panditId, startISO, endISO)
+      .then(setBlockedDates)
+      .catch(console.error);
+  }, [panditId, monthStart, monthEnd]);
+
   const computeFreeSlots = (isoDate: string) => {
-    // 1) remove booked slots
     const bookedTimes = bookedMap[isoDate] || [];
-    let free = ALL_SLOTS.filter((s) => !bookedTimes.includes(slotToTime(s)));
-
-    // 2) if selected date is today -> remove slots whose START time has passed
-    const selected = new Date(isoDate + "T00:00:00"); // safe local day
-    const now = new Date();
-
-    if (isSameDay(selected, now)) {
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-
-      free = free.filter((slot) => {
-        const startHour = SLOT_START_HOUR[slot] ?? 0;
-
-        // STRICT rule:
-        // if current time is AFTER start hour -> disable
-        if (currentHour > startHour) return false;
-
-        // if current time is EXACT start hour -> start has passed (even at minute 0)
-        if (currentHour === startHour && currentMinute >= 0) return false;
-
-        return true;
-      });
-    }
-
-    return free;
+    return ALL_SLOTS.filter((s) => !bookedTimes.includes(slotToTime(s)));
   };
 
-  // update available slots when date changes or bookedMap changes
   useEffect(() => {
     if (date) onAvailableSlotsChange(computeFreeSlots(date));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, bookedMap]);
 
-  // disable tiles in calendar
   const tileDisabled = ({ date, view }: { date: Date; view: string }) => {
     if (view !== "month") return false;
+
+    const iso = toISO(date);
 
     // disable past dates
     const today = new Date();
@@ -222,17 +234,18 @@ const BookingCalendar: React.FC<Props> = ({
 
     const d = new Date(date);
     d.setHours(0, 0, 0, 0);
-
     if (d < today) return true;
 
-    // disable fully booked days (AND today if all slots already passed)
-    const iso = toISO(date);
+    // ✅ disable blocked dates
+    if (blockedDates.includes(iso)) return true;
+
+    // disable fully booked days
     return computeFreeSlots(iso).length === 0;
   };
 
   return (
     <Calendar
-      value={date ? new Date(date + "T00:00:00") : undefined}
+      value={date ? new Date(date) : undefined}
       onChange={(val) => onDateChange(toISO(val as Date))}
       onActiveStartDateChange={({ activeStartDate }) =>
         setActiveMonth(activeStartDate || new Date())

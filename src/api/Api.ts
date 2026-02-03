@@ -11,6 +11,11 @@ export interface SignupData {
   dob?: string;
   gender?: string;
 }
+export type BlockedDate = {
+  id: number;
+  date: string;       // "YYYY-MM-DD"
+  reason?: string;
+};
 
 export interface SigninData {
   username: string;
@@ -132,6 +137,80 @@ async function tryRefreshToken(): Promise<boolean> {
   }
 }
 
+export async function khaltiDemoConfirm(bookingId: number, status: "paid" | "failed") {
+  const res = await authFetch(`/payments/khalti/demo/confirm/${bookingId}/`, {
+    method: "POST",
+    body: JSON.stringify({ status }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to confirm demo payment");
+  return data;
+}
+
+export async function downloadReceipt(bookingId: number) {
+  const res = await authFetch(`/bookings/${bookingId}/receipt/`, { method: "GET" });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || "Receipt download failed");
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `receipt_booking_${bookingId}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  window.URL.revokeObjectURL(url);
+}
+
+
+
+export async function blockMyPanditDate(payload: { date: string; reason?: string }) {
+  const res = await authFetch("/pandit/blocked-dates/", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to block date");
+  return data;
+}
+export async function unblockMyPanditDate(payload: { date: string }) {
+  const res = await authFetch("/pandit/blocked-dates/unblock/", {
+    method: "DELETE",
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || "Failed to unblock date");
+  return data;
+}
+export async function fetchMyBlockedDates(start: string, end: string): Promise<BlockedDate[]> {
+  const res = await authFetch(`/pandit/blocked-dates/?start=${start}&end=${end}`, {
+    method: "GET",
+  });
+
+  const data = await res.json().catch(() => ([]));
+  if (!res.ok) throw new Error(data.message || "Failed to load blocked dates");
+  return data;
+}
+export async function fetchPanditBlockedDatesPublic(
+  panditId: number,
+  start: string,
+  end: string
+): Promise<string[]> {
+  const res = await fetch(
+    `${BASE_URL}/pandits/${panditId}/blocked-dates/?start=${start}&end=${end}`
+  );
+
+  const data = await res.json().catch(() => ([]));
+  if (!res.ok) throw new Error(data.message || "Failed to load blocked dates");
+  return data; // expected: ["2026-02-03", "2026-02-07", ...]
+}
 
 // wrapper that adds Authorization header and auto-refreshes on 401
 export async function authFetch(path: string, opts: RequestInit = {}) {

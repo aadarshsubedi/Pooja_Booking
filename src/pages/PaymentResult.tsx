@@ -1,33 +1,43 @@
 import React from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import "./PaymentPage.css";
+import { useSearchParams } from "react-router-dom";
+import { downloadReceipt } from "../api/Api";
+import "./PaymentResultPage.css";
 
-const PaymentResult: React.FC = () => {
+const PaymentResultPage: React.FC = () => {
   const [params] = useSearchParams();
-  const navigate = useNavigate();
+  const status = params.get("status");
+  const bookingId = Number(params.get("booking_id"));
 
-  const status = params.get("status"); // success / failed
-  const bookingId = params.get("booking_id");
-  const method = params.get("method");
+  const isSuccess = status === "success";
+
+  const handleDownload = async () => {
+    if (!bookingId) return alert("Booking id missing");
+    try {
+      await downloadReceipt(bookingId);
+    } catch (e: any) {
+      alert(e?.message || "Failed to download receipt");
+    }
+  };
 
   return (
-    <div className="payment-wrapper">
-      <h2 className="payment-title">
-        {status === "success" ? "✅ Payment Successful" : "❌ Payment Failed"}
-      </h2>
+    <div className="pr-wrap">
+      <div className="pr-card">
+        <h2>{isSuccess ? "✅ Payment Successful" : "❌ Payment Failed"}</h2>
+        <p>Booking ID: #{bookingId}</p>
 
-      <div className="payment-box">
-        <div className="payment-right" style={{ width: "100%" }}>
-          <p><b>Method:</b> {method || "-"}</p>
-          <p><b>Booking:</b> {bookingId ? `#${bookingId}` : "-"}</p>
-
-          <button className="pay-now-btn" onClick={() => navigate("/home")}>
-            Go Home
-          </button>
-        </div>
+        {isSuccess ? (
+          <>
+            <p>Your payment is completed. You can download your receipt as proof.</p>
+            <button className="pr-btn" onClick={handleDownload}>
+              Download Receipt (PDF)
+            </button>
+          </>
+        ) : (
+          <p>Please try again. No receipt is available for failed payments.</p>
+        )}
       </div>
     </div>
   );
 };
 
-export default PaymentResult;
+export default PaymentResultPage;

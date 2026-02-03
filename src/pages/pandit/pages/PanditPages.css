@@ -217,8 +217,153 @@
 /* =====================================================
    SCHEDULE PAGE
    ===================================================== */
+   .schedule-container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 16px;
+  align-items: start;
+}
 
-.schedule-page {
+.schedule-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.calendar-wrap {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.selected-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-green {
+  background: #e8fff1;
+  color: #137a3a;
+  border: 1px solid #bff2d1;
+}
+
+.badge-red {
+  background: #ffecec;
+  color: #a01818;
+  border: 1px solid #ffc2c2;
+}
+
+.reason-input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+
+.btn-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.block-btn,
+.unblock-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.block-btn {
+  background: #111827;
+  color: white;
+}
+
+.unblock-btn {
+  background: #c62828;
+  color: white;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.muted {
+  color: #666;
+  font-size: 14px;
+}
+
+.blocked-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.blocked-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+}
+
+.blocked-date {
+  font-weight: 800;
+}
+
+.blocked-reason {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.mini-unblock {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #ffb4b4;
+  background: #ffecec;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* Calendar: blocked-day style */
+.blocked-day abbr {
+  background: #111827;
+  color: white !important;
+  border-radius: 8px;
+  padding: 4px 6px;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .schedule-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* .schedule-page {
   padding: 24px;
   background: #fff4eb;
 }
@@ -252,7 +397,7 @@
   background: linear-gradient(to right, #f4a045, #f6b35b);
   color: white;
   border: none;
-}
+} */
 
 /* =====================================================
    EARNINGS PAGE

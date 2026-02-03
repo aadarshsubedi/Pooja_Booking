@@ -54,26 +54,24 @@ const PaymentPage: React.FC = () => {
 
     setLoading(true);
     try {
-    //   const res = await payBooking(bookingId, { method, amount,payer_id: payerId.trim() });
+      const res = await payBooking(bookingId, { method, amount });
 
-    //   // Khalti -> redirect
-    //   if (res.type === "redirect" && res.payment_url) {
-    //     window.location.href = res.payment_url;
-    //     return;
-    //   }
+      // ✅ eSewa (form submit)
+      if (res.type === "form" && (res.action_url || res.action) && res.fields) {
+        submitEsewaForm(res.action_url || res.action, res.fields);
+        return;
+      }
 
-    //   // eSewa -> submit form
-    //   if (res.type === "form" && res.action && res.fields) {
-    //     submitEsewaForm(res.action, res.fields);
-    //     return;
-    //   }
+      // ✅ Khalti demo
+      if (res.type === "demo") {
+      navigate("/khalti-demo", { state: { bookingId, amount } });
+      return;
+      }
 
-    //   throw new Error("Invalid payment response from server.");
-    // } catch (e: any) {
-    //   alert(e?.message || "Payment initiation failed.");
-    // } finally {
-    //   setLoading(false);
-    const res = await payBooking(bookingId, { method, amount });
+    throw new Error("Invalid payment response from server.");
+
+
+
 
 // ✅ SUPPORT BOTH RESPONSE FORMATS (old + new)
 
@@ -100,6 +98,7 @@ throw new Error("Invalid payment response from server.");
       alert(e?.message || "Payment initiation failed.");
     }
   };
+
 
   return (
     <div className="payment-wrapper">

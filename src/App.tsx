@@ -24,6 +24,8 @@ import Editprofile from "./pages/Editprofile";
 import Changepassword from "./pages/Changepassword";
 import Mylocation from "./pages/Mylocation";
 import Bookmarks from "./pages/Bookmarks";
+import KhaltiDemoPage from "./pages/KhaltiDemoPage";
+import PaymentResultPage from "./pages/PaymentResult";
 
 import CallPage from "./pages/callpage";
 import MessageInterface from "./pages/messageinterface";
@@ -77,6 +79,8 @@ const AppContent: React.FC = () => {
           <Route path="/my-location" element={<Mylocation />} />
           <Route path="/pandit-verification" element={<PanditVerification />} />
           <Route path="/payment-result" element={<PaymentResult />} />
+          <Route path="/khalti-demo" element={<KhaltiDemoPage />} />
+          <Route path="/payment-result" element={<PaymentResultPage />} />
           <Route path="/call" element={<CallPage />} />
           <Route
             path="/message"
