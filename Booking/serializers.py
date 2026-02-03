@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Booking
+from .models import Booking,PanditBlockedDate
 from django.utils import timezone
+
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -70,3 +71,8 @@ class PanditBookingSerializer(serializers.ModelSerializer):
             "created_at",
         )
         read_only_fields = ("user", "pandit", "created_at", "paid_at")
+        
+class PanditBlockedDateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PanditBlockedDate
+        fields = ("id", "date", "reason", "created_at")

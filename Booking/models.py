@@ -59,3 +59,17 @@ class Booking(models.Model):
     payment_method = models.CharField(max_length=20, blank=True, null=True)  # khalti/esewa/demo
     payment_reference = models.CharField(max_length=100, blank=True, null=True)
     paid_at = models.DateTimeField(blank=True, null=True)
+
+class PanditBlockedDate(models.Model):
+    pandit = models.ForeignKey(User, on_delete=models.CASCADE, related_name="blocked_dates")
+    date = models.DateField()
+    reason = models.CharField(max_length=255, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("pandit", "date")
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"{self.pandit} blocked {self.date}"

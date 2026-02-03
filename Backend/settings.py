@@ -165,17 +165,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Payment setting
-FRONTEND_URL = "http://localhost:5173"   
+# Frontend/Backend URLs
+FRONTEND_URL = "http://localhost:5173"
 BACKEND_URL = "http://localhost:8000"
 
+# eSewa UAT (Sandbox)
+ESEWA_PRODUCT_CODE = "EPAYTEST"
+ESEWA_SECRET_KEY = "8gBm/:&EnhH.1/q"   # from your screenshot
+ESEWA_FORM_URL = "https://rc.esewa.com.np/api/epay/main/v2/form"
+ESEWA_STATUS_URL = "https://rc.esewa.com.np/api/epay/transaction/status/"
 
-# eSewa (UAT / rc)
-ESEWA_PRODUCT_CODE = os.getenv("ESEWA_PRODUCT_CODE", "EPAYTEST")
-ESEWA_SECRET_KEY = os.getenv("ESEWA_SECRET_KEY", "8gBm/:&EnhH.1/q")  # UAT test key from eSewa docs
-
-# Khalti
-KHALTI_SECRET_KEY = "test_secret_key_xxxxx"  # keep secret in env
-KHALTI_INIT_URL = "https://a.khalti.com/api/v2/epayment/initiate/"
-KHALTI_LOOKUP_URL = "https://a.khalti.com/api/v2/epayment/lookup/"
-KHALTI_VERIFY_URL = "https://a.khalti.com/api/v2/epayment/verify/"
+# Khalti (we are NOT using real keys for now)
+KHALTI_SECRET_KEY = ""  # keep empty => demo mode

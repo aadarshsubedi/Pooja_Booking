@@ -12,8 +12,8 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from datetime import date as date_cls
-from .models import Booking
-from .serializers import BookingSerializer
+from .models import Booking,PanditBlockedDate
+from .serializers import BookingSerializer,PanditBlockedDateSerializer
 from django.utils import timezone
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -21,11 +21,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import get_user_model
+from django.utils.dateparse import parse_date
 
 from .serializers import BookingSerializer
 
 User = get_user_model()
-
 @api_view(['POST'])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
@@ -34,6 +34,15 @@ def create_booking_view(request):
     Create a booking.
     """
     pandit_id = request.data.get("pandit")
+    data_str=request.data.get("data")
+    
+    booking_date=parse_date(data_str) if data_str else None
+    
+    if PanditBlockedDate.objects.filter(pandit_id=pandit_id, date=booking_date).exists():
+        return Response(
+            {"message": "Pandit is unavailable on this date."},
+            status=400
+        )
 
     # ✅ validate pandit exists
     if not pandit_id:
